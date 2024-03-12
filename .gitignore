@@ -1,3 +1,5 @@
 venv
 .replit
 .pythonlibs
+/__pycache__
+backend/__pycache__
