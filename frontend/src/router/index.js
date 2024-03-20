@@ -7,6 +7,7 @@ import Login from '../components/Login.vue'
 Vue.use(VueRouter)
 
 const routes = [
+
   {
     path: '/register',
     name: 'Registration',
