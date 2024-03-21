@@ -10,6 +10,8 @@ from backend import initial_data
 
 from backend import resources
 
+from backend import controllers
+
 
 @app.route("/")
 def hello_world():

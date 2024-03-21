@@ -2,7 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="#" style="margin-right: 15px;">
-        <i class="fa fa-book" aria-hidden="true"></i>
+        <img src="../assets/logo.png" alt="Vibezz" width="30" height="30" class="d-inline-block align-text-top" />
         Vibezz
       </a>
       <button
