@@ -42,9 +42,9 @@ with app.app_context():
             name="Admin01",
             username="admin01",
             email="admin01@vibezz.com",
-            password="admin",
             role_id="adm",
         )
+        admin.set_password("admin")
         db.session.add(admin)
         db.session.commit()
         print("Admin created")

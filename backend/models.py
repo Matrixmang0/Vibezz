@@ -1,5 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from app import app
+from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy(app)
 
@@ -16,8 +17,21 @@ class User(db.Model):
     name = db.Column(db.String(100), nullable=False)
     username = db.Column(db.String(15), unique=True, nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
-    password = db.Column(db.String, nullable=False)
-    profile_img = db.Column(db.String, nullable=False, default="default.png")
+    passhash = db.Column(db.String, nullable=False)
+
+    @property
+    def password(self):
+        raise AttributeError("Password is not a readable attribute")
+
+    def set_password(self, password):
+        self.passhash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.passhash, password)
+
+    profile_img = db.Column(
+        db.String, nullable=False, default="../frontend/public/profile.png"
+    )
     role_id = db.Column(db.String, db.ForeignKey("role.id"))
     role = db.relationship("Role")
     playlists = db.relationship(
