@@ -1,15 +1,12 @@
-import Vue from 'vue'
-import App from './App.vue'
-import router from './router'
-
-Vue.config.productionTip = false
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
 
 router.beforeEach((to, from, next) => {
-  document.title = to.meta.title || 'Vibezz'; // Update title based on meta title of the route
+  document.title = to.meta.title || 'Vibezz'; 
   next();
 });
 
-new Vue({
-  router,
-  render: function (h) { return h(App) }
-}).$mount('#app')
+const app = createApp(App);
+app.use(router);
+app.mount('#app');
