@@ -32,7 +32,7 @@ class User(db.Model):
     profile_img = db.Column(
         db.String, nullable=False, default="../frontend/public/profile.png"
     )
-    role_id = db.Column(db.String, db.ForeignKey("role.id"))
+    role_id = db.Column(db.String, db.ForeignKey("role.id"), default="usr")
     role = db.relationship("Role")
     playlists = db.relationship(
         "Playlist", cascade="all, delete-orphan", backref="user", lazy=True

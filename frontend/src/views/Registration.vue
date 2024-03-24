@@ -1,32 +1,80 @@
+<script>
+
+export default {
+
+    data() {
+				return {
+						formData:{
+								username: '',
+								password: '',
+                confirm_password: '',
+                email: '',
+                name: ''
+						},
+						message: '',
+            warning: ''
+				}
+		},
+
+		methods: {
+				async register() {
+						const response = await fetch('http://127.0.0.1:5000/api/users', {
+							method: 'post',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(this.formData)
+						});
+						const data = await response.json();
+						if (response.status === 404) {
+							this.warning = data.message;
+							this.$router.push('/register');
+						}
+						else{
+							this.message = data.message;
+							this.$router.push('/login');
+					}
+				}
+		},
+
+    name: 'Registration',
+}
+</script>
+
 <template>
+  <div v-if="warning">
+				<div class="alert alert-warning mb-3 text-center" role="alert">
+												{{ warning }}
+				</div>
+	</div>
   <div class="container mt-5">
     <h1 class="display-1 text-center">Registration</h1>
 
     <div class="card bg-light shadow-lg p-4 rounded w-50 mx-auto">
-      <form method="post">
+      <form  @submit.prevent="register">
         <div class="mb-3">
           <label for="username" class="form-label">Username</label>
-          <input type="text" name="username" class="form-control" required />
+          <input type="text" name="username" class="form-control" v-model="formData.username" required />
         </div>
         <div class="mb-3">
           <label for="email" class="form-label">Email</label>
-          <input type="email" name="email" class="form-control" required />
+          <input type="email" name="email" class="form-control" v-model="formData.email" required />
           <div id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</div>
         </div>
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
-          <input type="text" name="name" class="form-control" required />
+          <input type="text" name="name" class="form-control" v-model="formData.name" required />
         </div>
         <div class="mb-3">
           <label for="password" class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" aria-describedby="passwordHelpBlock" required />
+          <input type="password" name="password" class="form-control" aria-describedby="passwordHelpBlock" v-model="formData.password" required />
           <div id="passwordHelpBlock" class="form-text text-muted">
             Your password must be 8-20 characters long, contain letters and numbers, and must not contain spaces, special characters, or emoji.
           </div>
         </div>
         <div class="mb-3">
           <label for="confirm_password" class="form-label">Confirm Password</label>
-          <input type="password" name="confirm_password" class="form-control" required />
+          <input type="password" name="confirm_password" class="form-control" v-model="formData.confirm_password" required />
         </div>
         <div class="mb-3 text-center">
           <button type="submit" class="btn btn-primary btn-lg">Register</button>
@@ -35,12 +83,6 @@
     </div>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'Registration',
-}
-</script>
 
 <style scoped>
   body {

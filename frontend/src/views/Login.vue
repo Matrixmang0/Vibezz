@@ -1,52 +1,63 @@
 <script>
-import { apiClient } from "@/apiClient";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
 
 export default {
-  name: "Login",
-  setup() {
-    const router = useRouter();
-    const username = ref("");
-    const password = ref("");
-    const message = ref("");
-
-    const login = async (e) => {
-			e.preventDefault();
-			try {
-				const response = await apiClient.post("api/login", {
-					username: username.value,
-					password: password.value,
-				});
-				console.log("Login response:", response); // Log the response to the console
-				if (response?.data?.token) {
-					localStorage.setItem("token", response.data.token);
-					router.push("/");
-				} else {
-					throw new Error("Invalid response from server");
+    data() {
+				return {
+						formData:{
+								username: '',
+								password: ''
+						},
+						message: ''
 				}
-			} catch (error) {
-				console.error("Login error:", error); // Log any errors to the console
-				message.value = error.response?.data?.message || "An error occurred";
-			}
-		};
+		},
 
-    return { username, password, message, login };
-  },
-};
+		methods: {
+				async login() {
+						const response = await fetch('http://127.0.0.1:5000/api/login', {
+							method: 'post',
+							headers: {
+								'Content-Type': 'application/json'
+							},
+							body: JSON.stringify(this.formData)
+						});
+						const data = await response.json();
+						if (data.message) {
+							this.message = data.message;
+							this.$router.push('/login');
+						}
+						else{
+							localStorage.setItem('token', data.access_token);
+							this.$router.push('/');
+					}
+				}
+		},
+
+		name: 'Login'
+}
+
 </script>
 
 <template>
+	<div v-if="message">
+				<div class="alert alert-success mb-3 text-center" role="alert">
+												{{ message }}
+				</div>
+	</div>
   <div class="container mt-5">
     <h1 class="display-1 text-center"><b>Login</b></h1>
 
     <div class="card bg-light shadow-lg p-4 rounded w-50 mx-auto">
+			<div v-if="message">
+				<div class="alert alert-danger mb-3 text-center" role="alert">
+												{{ message }}
+				</div>
+			</div>
       <form @submit.prevent="login">
         <div class="mb-3">
           <label for="username-email" class="form-label">Username</label>
           <input
             type="text"
-            v-model="username"
+            v-model="formData.username"
             class="form-control"
             id="InputEmail"
             aria-describedby="emailHelp"
@@ -59,17 +70,17 @@ export default {
           <label for="password" class="form-label">Password</label>
           <input
             type="password"
-            v-model="password"
+            v-model="formData.password"
             class="form-control"
             id="exampleInputPassword1"
           />
         </div>
         <div class="mb-3 text-center">
-          <button type="submit" class="btn btn-success btn-lg">Login</button>
+          <button type="submit" class="btn btn-success btn-lg" >Login</button>
         </div>
       </form>
 
-      <p class="text-center">Don't have an account? <a href="#">Register</a></p>
+      <p class="text-center">Don't have an account? <a href="/register">Register</a></p>
     </div>
   </div>
 </template>

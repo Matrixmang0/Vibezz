@@ -1,9 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
+import Home from '../views/Home.vue'
 import Registration from '../views/Registration.vue'
 import Login from '../views/Login.vue'
 
 const routes = [
+
+  {
+    path: '/',
+    name: 'Home',
+    component: Home
+  },
 
   {
     path: '/register',
@@ -13,13 +20,6 @@ const routes = [
     meta: {
       title: 'Register'
     },
-    beforeEnter: (to, from, next) => {
-      if (localStorage.getItem('token')) {
-        next('/login')
-      } else {
-        next()
-      }
-    }
   },
 
   {
@@ -29,6 +29,13 @@ const routes = [
     meta: {
       title: 'Login'
     },
+    beforeEnter: (to, from, next) => {
+      if (localStorage.getItem('token')) {
+        next('/')
+      } else {
+        next()
+      }
+    }
   },
 ]
 
