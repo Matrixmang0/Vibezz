@@ -1,6 +1,6 @@
 from flask_restful import Resource, reqparse, fields, marshal_with
 from backend.models import User, db
-from email_validator import validate_email
+from email_validator import validate_email, EmailUndeliverableError
 import re
 from flask import abort
 
@@ -66,43 +66,47 @@ class UsersResource(Resource):
             or not name
         ):
             print("Please fill all the fields")
-            abort(404, message="Please fill all the fields")
+            abort(404, "Please fill all the fields")
 
         if password != confirm_password:
             print("Passwords do not match")
-            abort(404, message="Passwords do not match")
+            abort(404, "Passwords do not match")
 
-        if not validate_email(email):
-            print("Please enter a valid email address")
-            abort(404, message="Please enter a valid email address")
+        try:
+            if not validate_email(email):
+                print("Please enter a valid email address")
+                abort(404, "Please enter a valid email address")
+        except EmailUndeliverableError:
+            print("The email domain does not exist")
+            abort(404, "The email domain does not exist")
 
         user = User.query.filter_by(email=email).first()
 
         if user:
             print("Email already exists")
-            abort(404, message="Email already exists")
+            abort(404, "Email already exists")
 
         if len(password) < 8:
             print("Password should be at least 8 characters long")
-            abort(404, message="Password should be at least 8 characters long")
+            abort(404, "Password should be at least 8 characters long")
 
         if not re.search(r"[A-Z]", password):
             print("Password should contain at least one uppercase letter")
-            abort(404, message="Password should contain at least one uppercase letter")
+            abort(404, "Password should contain at least one uppercase letter")
 
         if not re.search(r"[a-z]", password):
             print("Password should contain at least one lowercase letter")
-            abort(404, message="Password should contain at least one lowercase letter")
+            abort(404, "Password should contain at least one lowercase letter")
 
         if not re.search(r"\d", password):
             print("Password should contain at least one digit")
-            abort(404, message="Password should contain at least one digit")
+            abort(404, "Password should contain at least one digit")
 
         user = User.query.filter_by(username=username).first()
 
         if user:
             print(f"Username {username} already exists")
-            abort(404, message=f"Username {username} already exists")
+            abort(404, f"Username {username} already exists")
 
         new_user = User(
             username=username,
@@ -114,4 +118,4 @@ class UsersResource(Resource):
 
         db.session.add(new_user)
         db.session.commit()
-        return user, {"message": "User created successfully"}, 201
+        return user, 201, {"message": "User created successfully"}

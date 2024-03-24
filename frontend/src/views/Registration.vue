@@ -42,6 +42,11 @@ export default {
 </script>
 
 <template>
+  <div v-if="message">
+				<div class="alert alert-success mb-3 text-center" role="alert">
+												{{ message }}
+				</div>
+	</div>
   <div v-if="warning">
 				<div class="alert alert-warning mb-3 text-center" role="alert">
 												{{ warning }}

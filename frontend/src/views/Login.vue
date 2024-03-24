@@ -1,4 +1,5 @@
 <script>
+import { message } from './Registration.vue'
 
 export default {
     data() {
@@ -7,12 +8,14 @@ export default {
 								username: '',
 								password: ''
 						},
+						warning: '',
 						message: ''
 				}
 		},
 
 		methods: {
 				async login() {
+						this.message = message;
 						const response = await fetch('http://127.0.0.1:5000/api/login', {
 							method: 'post',
 							headers: {
@@ -22,7 +25,7 @@ export default {
 						});
 						const data = await response.json();
 						if (data.message) {
-							this.message = data.message;
+							this.warning = data.message;
 							this.$router.push('/login');
 						}
 						else{
@@ -38,8 +41,13 @@ export default {
 </script>
 
 <template>
+	<div v-if="warning">
+				<div class="alert alert-warning mb-3 text-center" role="alert">
+												{{ warning }}
+				</div>
+	</div>
 	<div v-if="message">
-				<div class="alert alert-success mb-3 text-center" role="alert">
+				<div class="alert alert-warning mb-3 text-center" role="alert">
 												{{ message }}
 				</div>
 	</div>
@@ -47,11 +55,6 @@ export default {
     <h1 class="display-1 text-center"><b>Login</b></h1>
 
     <div class="card bg-light shadow-lg p-4 rounded w-50 mx-auto">
-			<div v-if="message">
-				<div class="alert alert-danger mb-3 text-center" role="alert">
-												{{ message }}
-				</div>
-			</div>
       <form @submit.prevent="login">
         <div class="mb-3">
           <label for="username-email" class="form-label">Username</label>
