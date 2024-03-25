@@ -21,7 +21,14 @@ class LoginResource(Resource):
         access_token = create_access_token(
             identity=user.id, expires_delta=timedelta(hours=1)
         )
-        return {"access_token": access_token}, 200
+        return (
+            {
+                "access_token": access_token,
+                "user_id": user.id,
+                "msg": f'User {args["username"]} logged in successfully',
+            },
+            200,
+        )
 
     @jwt_required()
     def get(self):

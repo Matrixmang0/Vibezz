@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse, fields, marshal_with
 from backend.models import User, db
 from email_validator import validate_email, EmailUndeliverableError
 import re
-from flask import abort
+from flask import abort, jsonify
 
 get_fields = {
     "id": fields.Integer,
@@ -18,14 +18,6 @@ post_parser.add_argument("password", type=str, required=True)
 post_parser.add_argument("email", type=str, required=True)
 post_parser.add_argument("name", type=str, required=True)
 post_parser.add_argument("confirm_password", type=str, required=True)
-
-post_fields = {
-    "name": fields.String,
-    "username": fields.String,
-    "email": fields.String,
-    "password": fields.String,
-    "confirm_password": fields.String,
-}
 
 
 class UserResource(Resource):
@@ -48,7 +40,6 @@ class UsersResource(Resource):
     def get(self):
         pass
 
-    @marshal_with(post_fields)
     def post(self):
         args = post_parser.parse_args()
 
@@ -118,4 +109,4 @@ class UsersResource(Resource):
 
         db.session.add(new_user)
         db.session.commit()
-        return user, 201, {"message": "User created successfully"}
+        return {"message": "User created successfully"}, 201

@@ -11,8 +11,6 @@ export default {
                 email: '',
                 name: ''
 						},
-						message: '',
-            warning: ''
 				}
 		},
 
@@ -27,11 +25,11 @@ export default {
 						});
 						const data = await response.json();
 						if (response.status === 404) {
-							this.warning = data.message;
+							this.$store.dispatch('showMessage', data.message);
 							this.$router.push('/register');
 						}
 						else{
-							this.message = data.message;
+							this.$store.dispatch('showMessage', data.message);
 							this.$router.push('/login');
 					}
 				}
@@ -42,16 +40,6 @@ export default {
 </script>
 
 <template>
-  <div v-if="message">
-				<div class="alert alert-success mb-3 text-center" role="alert">
-												{{ message }}
-				</div>
-	</div>
-  <div v-if="warning">
-				<div class="alert alert-warning mb-3 text-center" role="alert">
-												{{ warning }}
-				</div>
-	</div>
   <div class="container mt-5">
     <h1 class="display-1 text-center">Registration</h1>
 

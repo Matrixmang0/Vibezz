@@ -32,39 +32,36 @@
               </div>
         {% endif %} -->
 
-        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-
-          <!-- {% if session["user_id"] == 10000 %}
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> User Stats</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-universal-access"></i>  Requests</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-hand-holding-hand"></i> Borrows</a>
-          </li>
-          {% elif session["user_id"] %}
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> My Stats</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-book-open"></i>  My Books</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-cash-register"></i> Register</a>
-          </li>
-          {% endif %} -->
-          
-
-        </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-if="user_id == 0">
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> User Stats</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-universal-access"></i>  Requests</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-hand-holding-hand"></i> Borrows</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-else-if="user_id">
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> My Stats</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-book-open"></i>  My Books</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i> My Cart</a>
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-else>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#"><i class="fa-solid fa-cash-register"></i> Register</a>
+            </li>
+          </ul>
 
       
 
@@ -105,6 +102,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      user_id: localStorage.getItem('user_id'),
+    }
+  },
   name: 'Navbar',
 }
 </script>

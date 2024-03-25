@@ -1,5 +1,4 @@
 <script>
-import { message } from './Registration.vue'
 
 export default {
     data() {
@@ -8,8 +7,6 @@ export default {
 								username: '',
 								password: ''
 						},
-						warning: '',
-						message: ''
 				}
 		},
 
@@ -24,12 +21,14 @@ export default {
 							body: JSON.stringify(this.formData)
 						});
 						const data = await response.json();
-						if (data.message) {
-							this.warning = data.message;
+						if (response.status != 200) {
+							this.$store.dispatch('showMessage', data.message);
 							this.$router.push('/login');
 						}
 						else{
 							localStorage.setItem('token', data.access_token);
+							localStorage.setItem('user_id', data.user_id);
+							this.$store.dispatch('showMessage', data.msg);
 							this.$router.push('/');
 					}
 				}
@@ -41,16 +40,6 @@ export default {
 </script>
 
 <template>
-	<div v-if="warning">
-				<div class="alert alert-warning mb-3 text-center" role="alert">
-												{{ warning }}
-				</div>
-	</div>
-	<div v-if="message">
-				<div class="alert alert-warning mb-3 text-center" role="alert">
-												{{ message }}
-				</div>
-	</div>
   <div class="container mt-5">
     <h1 class="display-1 text-center"><b>Login</b></h1>
 
