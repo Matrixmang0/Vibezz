@@ -2,7 +2,8 @@ from flask_restful import Resource, reqparse, fields, marshal_with
 from backend.models import User, db
 from email_validator import validate_email, EmailUndeliverableError
 import re
-from flask import abort, jsonify
+from flask import abort
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 get_fields = {
     "id": fields.Integer,
@@ -10,6 +11,7 @@ get_fields = {
     "username": fields.String,
     "email": fields.String,
     "role_id": fields.String,
+    "profile_img": fields.String,
 }
 
 post_parser = reqparse.RequestParser()
@@ -20,17 +22,55 @@ post_parser.add_argument("name", type=str, required=True)
 post_parser.add_argument("confirm_password", type=str, required=True)
 
 
+put_parser = reqparse.RequestParser()
+put_parser.add_argument("username", type=str, required=True)
+put_parser.add_argument("name", type=str, required=True)
+put_parser.add_argument("email", type=str, required=True)
+
+
 class UserResource(Resource):
 
+    @jwt_required()
     @marshal_with(get_fields)
     def get(self, user_id):
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to view this profile")
         user = User.query.get(user_id)
         if not user:
-            abort(404, {"error": "User ID: {} doesn't exist".format(user_id)})
+            abort(404, "User ID: {} doesn't exist".format(user_id))
         return user, 200
 
-    def put(self):
-        pass
+    @jwt_required()
+    def put(self, user_id):
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to make changes to this profile")
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, "User ID: {} doesn't exist".format(user_id))
+
+        args = put_parser.parse_args()
+
+        name = args["name"]
+        username = args["username"]
+        email = args["email"]
+
+        if not username or not email or not name:
+            print("Please fill all the fields")
+            abort(404, "Please fill all the fields")
+
+        try:
+            if not validate_email(email):
+                print("Please enter a valid email address")
+                abort(404, "Please enter a valid email address")
+        except EmailUndeliverableError:
+            print("The email domain does not exist")
+            abort(404, "The email domain does not exist")
+
+        user.name = name
+        user.username = username
+        user.email = email
+        db.session.commit()
+        return {"message": "Profile updated successfully"}, 200
 
     def delete(self):
         pass

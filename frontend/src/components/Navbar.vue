@@ -19,7 +19,7 @@
       <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-house"></i> Home</a>
+            <a class="nav-link" href="/"><i class="fa-solid fa-house"></i> Home</a>
           </li>
           
         </ul>
@@ -56,10 +56,10 @@
           </ul>
           <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-else>
             <li class="nav-item">
-              <a class="nav-link" href="#"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+              <a class="nav-link" href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#"><i class="fa-solid fa-cash-register"></i> Register</a>
+              <a class="nav-link" href="/register"><i class="fa-solid fa-cash-register"></i> Register</a>
             </li>
           </ul>
 
@@ -78,19 +78,20 @@
                   <!-- {% endif %} -->
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
-                  <!-- {% if "user_id" in session %}
-                      <li><a class="dropdown-item" href="#">Profile</a></li>
-                      {% if session['user_id'] != 10000 %}
+                  <div v-if="user_id">
+                      <li><a class="dropdown-item" href="/profile" :class="{ 'active': $route.name === 'Profile' }">Profile</a></li>
+                      <div v-if="user_id == 0">
                           <li><a class="dropdown-item" href="#">My Orders</a></li>
                           <li><a class="dropdown-item" href="#">My Borrows</a></li>
                           <li><a class="dropdown-item" href="#">Requests</a></li>
-                      {% endif %}
+                      </div>
                       <li><hr class="dropdown-divider"></li>
-                      <li class="logout-item"><a class="dropdown-item" href="#">Logout</a></li>
-                  {% else %}
-                      <li><a class="dropdown-item" href="#">Login</a></li>
-                      <li><a class="dropdown-item" href="#">Register</a></li>
-                  {% endif %} -->
+                      <li class="logout-item"><a class="dropdown-item" @click="logout" href="">Logout</a></li>
+                  </div>
+                  <div v-else>
+                      <li><a class="dropdown-item" :class="{ 'active': $route.name === 'Login' }" href="/login">Login</a></li>
+                      <li><a class="dropdown-item" :class="{ 'active': $route.name === 'Registration' }" href="/register">Register</a></li>
+                  </div>
               </ul>
           </div>
 
@@ -105,6 +106,14 @@ export default {
   data() {
     return {
       user_id: localStorage.getItem('user_id'),
+    }
+  },
+  methods:
+  {
+    logout(){
+      localStorage.removeItem('token');
+      localStorage.removeItem('user_id');
+      this.$router.push('/login');
     }
   },
   name: 'Navbar',

@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import store from '../store';
 
 import Home from '../views/Home.vue'
 import Registration from '../views/Registration.vue'
 import Login from '../views/Login.vue'
+import Profile from '../views/Profile.vue'
 
 const routes = [
 
@@ -31,12 +33,51 @@ const routes = [
     },
     beforeEnter: (to, from, next) => {
       if (localStorage.getItem('token')) {
+        store.dispatch('showMessage', "You are already logged in");
         next('/')
       } else {
         next()
       }
     }
   },
+
+  {
+    path: '/profile',
+    name: 'Profile',
+    component: Profile,
+    meta: {
+      title: 'Profile'
+    },
+    beforeEnter: async (to, from, next) => {
+      try {
+        if (!localStorage.getItem('token')) {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('http://127.0.0.1:5000/api/user/' + localStorage.getItem('user_id'), {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          to.meta.data = data;
+          next();
+        } else {
+          console.error('Failed to fetch user data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  }
 ]
 
 const router = createRouter({
