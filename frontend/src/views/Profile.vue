@@ -7,9 +7,10 @@ export default {
           profData: {
             name: this.$route.meta.data.name,
             username: this.$route.meta.data.username,
-            email: this.$route.meta.data.email,
-            profile_img: this.$route.meta.data.profile_img
-          }
+            email: this.$route.meta.data.email
+          },
+          user_id: localStorage.getItem('user_id')
+          
         }
 		},
     
@@ -28,11 +29,7 @@ export default {
 						});
 						const data = await response.json();
 						this.$store.dispatch('showMessage', data.message);
-				}
-		},
-
-    computed: {
-      
+				},
     },
 
 		name: 'Profile'
@@ -49,7 +46,8 @@ export default {
             Welcome
             <span class="text-muted">{{ profData.username }}</span>
           </h1>
-          <img :src="profData.profile_img" class="profile-image" alt="Profile Image" />
+          <img :src="'https://api.dicebear.com/7.x/pixel-art/svg?seed='+user_id" class="profile-image" alt="Profile Image" />
+
         </div>
   
         <div class="alert alert-info" role="alert">
@@ -71,7 +69,7 @@ export default {
             <input type="email" name="email" class="form-control" v-model="profData.email" required />
           </div>
           <div class="d-flex flex-column gap-3">
-            <a class="btn btn-warning" href="" role="button">Change Password</a>
+            <a class="btn btn-warning" href="/change-password" role="button">Change Password</a>
             <button type="submit" class="btn btn-info">Save</button>
           </div>
         </form>

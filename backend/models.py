@@ -29,9 +29,6 @@ class User(db.Model):
     def check_password(self, password):
         return check_password_hash(self.passhash, password)
 
-    profile_img = db.Column(
-        db.String, nullable=False, default="../frontend/public/profile.png"
-    )
     role_id = db.Column(db.String, db.ForeignKey("role.id"), default="usr")
     role = db.relationship("Role")
     playlists = db.relationship(

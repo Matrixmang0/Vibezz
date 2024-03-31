@@ -27,6 +27,11 @@ put_parser.add_argument("username", type=str, required=True)
 put_parser.add_argument("name", type=str, required=True)
 put_parser.add_argument("email", type=str, required=True)
 
+pass_parser = reqparse.RequestParser()
+pass_parser.add_argument("currentPassword", type=str, required=True)
+pass_parser.add_argument("newPassword", type=str, required=True)
+pass_parser.add_argument("reNewPassword", type=str, required=True)
+
 
 class UserResource(Resource):
 
@@ -150,3 +155,48 @@ class UsersResource(Resource):
         db.session.add(new_user)
         db.session.commit()
         return {"message": "User created successfully"}, 201
+
+
+class PassResource(Resource):
+
+    @jwt_required()
+    def put(self, user_id):
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to make changes to this profile")
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, "User ID: {} doesn't exist".format(user_id))
+
+        args = pass_parser.parse_args()
+
+        current_password = args["currentPassword"]
+        new_password = args["newPassword"]
+        re_new_password = args["reNewPassword"]
+
+        if not current_password or not new_password or not re_new_password:
+            print("Please fill all the fields")
+            abort(404, "Please fill all the fields")
+
+        if not user.check_password(current_password):
+            print("Incorrect password")
+            abort(404, "Incorrect password")
+        if new_password != re_new_password:
+            print("Passwords do not match")
+            abort(404, "Passwords do not match")
+
+        if len(new_password) < 8:
+            print("New password should be at least 8 characters long")
+            abort(404, "New password should be at least 8 characters long")
+        if not re.search(r"[A-Z]", new_password):
+            print("New Password should contain at least one uppercase letter")
+            abort(404, "New Password should contain at least one uppercase letter")
+        if not re.search(r"[a-z]", new_password):
+            print("New Password should contain at least one lowercase letter")
+            abort(404, "New Password should contain at least one lowercase letter")
+        if not re.search(r"\d", new_password):
+            print("New Password should contain at least one digit")
+            abort(404, "New Password should contain at least one digit")
+
+        user.set_password(new_password)
+        db.session.commit()
+        return {"message": "Password updated successfully"}, 200

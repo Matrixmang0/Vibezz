@@ -69,13 +69,14 @@
 
           <div class="dropdown" style="margin: 2px 2px;">
               <a class="btn btn-light" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
-                  <!-- {% if "user_id" in session %} -->
-                      <!-- <div class="profile-img">
-                          <img src="https://api.dicebear.com/7.x/pixel-art/svg?seed=0" width="40" height="40" alt="Profile Image" class="img-fluid rounded-circle" />
-                      </div> -->
-                  <!-- {% else %} -->
-                      <i class="fa-solid fa-user-large fa-2x"></i>
-                  <!-- {% endif %} -->
+                  <div v-if="user_id">
+                      <div class="profile-img">
+                          <img :src="'https://api.dicebear.com/7.x/pixel-art/svg?seed='+user_id" width="40" height="40" alt="Profile Image" class="img-fluid rounded-circle" />
+                      </div> 
+                  </div>
+                  <div v-else>
+                    <i class="fa-solid fa-user-large fa-2x"></i>
+                  </div>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuLink">
                   <div v-if="user_id">

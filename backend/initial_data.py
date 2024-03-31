@@ -44,7 +44,7 @@ with app.app_context():
             email="admin01@vibezz.com",
             role_id="adm",
         )
-        admin.set_password("admin")
+        admin.set_password("12QWasZX")
         db.session.add(admin)
         db.session.commit()
         print("Admin created")

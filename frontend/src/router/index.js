@@ -5,6 +5,7 @@ import Home from '../views/Home.vue'
 import Registration from '../views/Registration.vue'
 import Login from '../views/Login.vue'
 import Profile from '../views/Profile.vue'
+import ChangePassword from '../views/ChangePassword.vue';
 
 const routes = [
 
@@ -77,7 +78,28 @@ const routes = [
         console.error('Error fetching data:', error);
       }
     }
-  }
+  },
+  
+    {
+      path: '/change-password',
+      name: 'ChangePassword',
+      component: ChangePassword,
+      meta: {
+        title: 'Change Password'
+      },
+      beforeEnter: async (to, from, next) => {
+        try {
+          if (!localStorage.getItem('token')) {
+            store.dispatch('showMessage', "Please login to access this page");
+            next('/login');
+            return;
+          }
+          next();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+      }
+    },
 ]
 
 const router = createRouter({
