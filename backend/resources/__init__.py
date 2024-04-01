@@ -7,9 +7,12 @@ jwt = JWTManager(app)
 api = Api(app, prefix="/api")
 
 from backend.resources.login import LoginResource
+
 from backend.resources.user import UserResource
 from backend.resources.user import UsersResource
 from backend.resources.user import PassResource
+
+from backend.resources.album import AlbumsResource
 
 api.add_resource(LoginResource, "/login")
 api.add_resource(UserResource, "/user/<int:user_id>")

@@ -1,11 +1,12 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import store from '../store';
 
-import Home from '../views/Home.vue'
-import Registration from '../views/Registration.vue'
-import Login from '../views/Login.vue'
-import Profile from '../views/Profile.vue'
+import Home from '../views/Home.vue';
+import Registration from '../views/Registration.vue';
+import Login from '../views/Login.vue';
+import Profile from '../views/Profile.vue';
 import ChangePassword from '../views/ChangePassword.vue';
+import MyStudio from '../views/MyStudio.vue';
 
 const routes = [
 
@@ -80,26 +81,48 @@ const routes = [
     }
   },
   
-    {
-      path: '/change-password',
-      name: 'ChangePassword',
-      component: ChangePassword,
-      meta: {
-        title: 'Change Password'
-      },
-      beforeEnter: async (to, from, next) => {
-        try {
-          if (!localStorage.getItem('token')) {
-            store.dispatch('showMessage', "Please login to access this page");
-            next('/login');
-            return;
-          }
-          next();
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      }
+  {
+    path: '/change-password',
+    name: 'ChangePassword',
+    component: ChangePassword,
+    meta: {
+      title: 'Change Password'
     },
+    beforeEnter: async (to, from, next) => {
+      try {
+        if (!localStorage.getItem('token')) {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+        next();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+  },
+
+  {
+    path: '/studio',
+    name: 'MyStudio',
+    component: MyStudio,
+    meta: {
+      title: 'Studio'
+    },  
+    beforeEnter: async (to, from, next) => {
+      try {
+        if (!localStorage.getItem('token')) {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+        next();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+  },
 ]
 
 const router = createRouter({
