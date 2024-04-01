@@ -2,14 +2,14 @@
   <div class="container mt-5">
     <h1 class="display-3 mb-4" style="text-align: center;">New Album</h1>
 
-    <form action="" method="post" class="row g-3" @submit.prevent="submitForm">
+    <form class="row g-3" @submit.prevent="submitForm">
       <div class="col-md-8">
         <label for="name" class="form-label">Album Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+        <input type="text" class="form-control" id="name" name="name" v-model="formData.name" required>
       </div>
       <div class="col-12">
         <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" id="description" name="description" rows="8" required></textarea>
+        <textarea class="form-control" id="description" name="description" rows="8" v-model="formData.description" required></textarea>
       </div>
       <div class="col-12">
         <label for="image" class="form-label">Album Cover Image</label>
@@ -32,7 +32,7 @@ export default {
       formData: {
         name: null,
         description: null,
-        imageData: null
+        // imageData: null
       },
       imageUrl: null,
       user_id: localStorage.getItem('user_id')
@@ -43,12 +43,12 @@ export default {
       const file = event.target.files[0];
       if (file) {
         this.imageUrl = URL.createObjectURL(file);
-        this.formData.imageData = file;
+        // this.formData.imageData = file;
       }
     },
     async submitForm() {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://127.0.0.1:5000/api/'+this.user_id+'/create-album/', {
+      const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/new-album', {
 							method: 'post',
 							headers: {
 								'Content-Type': 'application/json',

@@ -1,7 +1,7 @@
 from flask_restful import Resource, reqparse, fields, marshal_with
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import abort
-from backend.models import Album, User
+from backend.models import Album, User, db
 
 
 class AlbumResource(Resource):
@@ -23,15 +23,29 @@ class AlbumResource(Resource):
         parser.add_argument(
             "description", type=str, required=True, help="Album description is required"
         )
-        parser.add_argument(
-            "imageData", type=str, required=True, help="File field required"
-        )
-        args = parser.parse_args()
-        album = Album(
-            name=args["name"], description=args["description"], artist_id=user_id
-        )
+        # parser.add_argument(
+        #     "imageData", type=str, required=True, help="File field required"
+        # )
 
-        return ({"msg": "Album created successfully"}, 201)
+        args = parser.parse_args()
+
+        if args["name"] == "":
+            abort(400, "Album name cannot be empty")
+        if args["description"] == "":
+            abort(400, "Album description cannot be empty")
+        # if args["imageData"] == "":
+        #     abort(400, "Album poster cannot be empty")
+
+        # poster_data = args["imageData"]
+        album = Album(
+            name=args["name"],
+            description=args["description"],
+            artist_id=user_id,
+        )
+        db.session.add(album)
+        db.session.commit()
+
+        return ({"message": "Album created successfully"}, 201)
 
     def put(self):
         pass

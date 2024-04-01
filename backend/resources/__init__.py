@@ -21,4 +21,4 @@ api.add_resource(UsersResource, "/users")
 api.add_resource(PassResource, "/user/<int:user_id>/edit-pass")
 
 api.add_resource(AlbumsResource, "/<int:user_id>/albums")
-api.add_resource(AlbumResource, "/<int:user_id>/create-album")
+api.add_resource(AlbumResource, "/<int:user_id>/new-album")
