@@ -7,6 +7,7 @@ import Login from '../views/Login.vue';
 import Profile from '../views/Profile.vue';
 import ChangePassword from '../views/ChangePassword.vue';
 import MyStudio from '../views/MyStudio.vue';
+import CreateAlbum from '../views/CreateAlbum.vue';
 
 const routes = [
 
@@ -116,10 +117,54 @@ const routes = [
           next('/login');
           return;
         }
-        next();
+
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/' + localStorage.getItem('user_id') +'/albums', {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.msg === "No albums found"){
+            to.meta.albumExists = false;
+            next();
+          }
+          else{
+            to.meta.albumExists = true;
+            to.meta.data = data;
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response.status);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
+    },
+  },
+
+    {
+      path: '/create-album',
+      name: 'CreateAlbum',
+      component: CreateAlbum,
+      meta: {
+        title: 'Create Album'
+      },
+      beforeEnter: async (to, from, next) => {
+        try {
+          if (!localStorage.getItem('token')) {
+            store.dispatch('showMessage', "Please login to access this page");
+            next('/login');
+            return;
+          }
+          next();
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
     }
 
   },

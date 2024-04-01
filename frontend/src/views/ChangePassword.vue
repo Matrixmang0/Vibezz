@@ -35,7 +35,7 @@ export default {
             currentPassword: '',
             newPassword: '',
             reNewPassword: ''
-          }
+          },
         }
 		},
     

@@ -8,8 +8,30 @@ class AlbumResource(Resource):
     def get(self):
         pass
 
-    def post(self):
-        pass
+    @jwt_required()
+    def post(self, user_id):
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to view this profile")
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, "User ID: {} doesn't exist".format(user_id))
+
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            "name", type=str, required=True, help="Album name is required"
+        )
+        parser.add_argument(
+            "description", type=str, required=True, help="Album description is required"
+        )
+        parser.add_argument(
+            "imageData", type=str, required=True, help="File field required"
+        )
+        args = parser.parse_args()
+        album = Album(
+            name=args["name"], description=args["description"], artist_id=user_id
+        )
+
+        return ({"msg": "Album created successfully"}, 201)
 
     def put(self):
         pass
