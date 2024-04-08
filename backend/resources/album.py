@@ -1,7 +1,12 @@
-from flask_restful import Resource, reqparse, fields, marshal_with
+from flask_restful import Resource, reqparse, fields, marshal_with, marshal
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import abort
 from backend.models import Album, User, db
+
+
+post_parser = reqparse.RequestParser()
+post_parser.add_argument("title", type=str, required=True)
+post_parser.add_argument("description", type=str, required=True)
 
 
 class AlbumResource(Resource):
@@ -11,37 +16,27 @@ class AlbumResource(Resource):
     @jwt_required()
     def post(self, user_id):
         if user_id != get_jwt_identity():
-            abort(403, "You are not authorized to view this profile")
+            abort(403, "You are not authorized to view this page")
         user = User.query.get(user_id)
         if not user:
             abort(404, "User ID: {} doesn't exist".format(user_id))
 
-        parser = reqparse.RequestParser()
-        parser.add_argument(
-            "name", type=str, required=True, help="Album name is required"
-        )
-        parser.add_argument(
-            "description", type=str, required=True, help="Album description is required"
-        )
-        # parser.add_argument(
-        #     "imageData", type=str, required=True, help="File field required"
-        # )
+        args = post_parser.parse_args()
 
-        args = parser.parse_args()
+        title = args["title"]
+        description = args["description"]
 
-        if args["name"] == "":
-            abort(400, "Album name cannot be empty")
-        if args["description"] == "":
-            abort(400, "Album description cannot be empty")
-        # if args["imageData"] == "":
-        #     abort(400, "Album poster cannot be empty")
+        if title == "" or description == "":
+            abort(404, "Please fill all the fields")
 
-        # poster_data = args["imageData"]
         album = Album(
-            name=args["name"],
+            title=args["title"],
             description=args["description"],
             artist_id=user_id,
         )
+
+        user.role_id = "art"
+
         db.session.add(album)
         db.session.commit()
 
@@ -56,6 +51,12 @@ class AlbumResource(Resource):
 
 class AlbumsResource(Resource):
 
+    album_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+        "description": fields.String,
+    }
+
     @jwt_required()
     def get(self, user_id):
         if user_id != get_jwt_identity():
@@ -64,9 +65,13 @@ class AlbumsResource(Resource):
         if not user:
             abort(404, "User ID: {} doesn't exist".format(user_id))
         if user.created_albums:
-            return user.created_albums, 200
+            albums = [
+                marshal(album, self.album_fields) for album in user.created_albums
+            ]
+            return albums, 200
         else:
-            return {"msg": "No albums found"}, 200
+            print("No albums found")
+            return ({"msg": "No albums found"}, 200)
 
     def post(self):
         pass

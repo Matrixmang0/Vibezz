@@ -159,9 +159,10 @@ const routes = [
           if (!localStorage.getItem('token')) {
             store.dispatch('showMessage', "Please login to access this page");
             next('/login');
-            return;
           }
-          next();
+          else {
+            next();
+          }
         } catch (error) {
           console.error('Error fetching data:', error);
         }

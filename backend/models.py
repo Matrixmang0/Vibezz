@@ -52,7 +52,6 @@ class Album(db.Model):
     title = db.Column(db.Unicode, nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     description = db.Column(db.String, nullable=False)
-    poster = db.Column(db.LargeBinary, nullable=False)
     tot_ratings = db.Column(db.Integer, nullable=False, default=0)
     no_ratings = db.Column(db.Integer, nullable=False, default=0)
     songs = db.relationship(

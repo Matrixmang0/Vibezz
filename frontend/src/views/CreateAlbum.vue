@@ -5,7 +5,7 @@
     <form class="row g-3" @submit.prevent="submitForm">
       <div class="col-md-8">
         <label for="name" class="form-label">Album Name</label>
-        <input type="text" class="form-control" id="name" name="name" v-model="formData.name" required>
+        <input type="text" class="form-control" id="name" name="name" v-model="formData.title" required>
       </div>
       <div class="col-12">
         <label for="description" class="form-label">Description</label>
@@ -30,8 +30,8 @@ export default {
   data() {
     return {
       formData: {
-        name: null,
-        description: null,
+        title: "",
+        description: "",
         // imageData: null
       },
       imageUrl: null,
