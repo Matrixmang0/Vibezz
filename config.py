@@ -10,6 +10,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = os.getenv(
     "SQLALCHEMY_TRACK_MODIFICATIONS"
 )
-app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER")
+app.config["UPLOAD_FOLDER_ALBUM"] = os.getenv("UPLOAD_FOLDER_ALBUM")
+app.config["UPLOAD_FOLDER_SONG"] = os.getenv("UPLOAD_FOLDER_SONG")
 app.config["ALLOWED_EXTENSIONS"] = os.getenv("ALLOWED_EXTENSIONS")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")

@@ -16,6 +16,7 @@ from backend.resources.album import AlbumsResource
 from backend.resources.album import AlbumResource
 
 from backend.resources.image import ImageAlbum
+from backend.resources.image import ImageSong
 
 api.add_resource(LoginResource, "/login")
 api.add_resource(UserResource, "/user/<int:user_id>")
@@ -26,3 +27,4 @@ api.add_resource(AlbumsResource, "/<int:user_id>/albums")
 api.add_resource(AlbumResource, "/<int:user_id>/new-album")
 
 api.add_resource(ImageAlbum, "/<int:user_id>/albums/upload-image")
+api.add_resource(ImageSong, "/<int:user_id>/albums/upload-image")
