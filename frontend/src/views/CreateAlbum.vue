@@ -4,8 +4,8 @@
 
     <form class="row g-3" @submit.prevent="submitForm">
       <div class="col-md-8">
-        <label for="name" class="form-label">Album Name</label>
-        <input type="text" class="form-control" id="name" name="name" v-model="formData.title" required>
+        <label for="title" class="form-label">Album Title</label>
+        <input type="text" class="form-control" id="title" name="title" v-model="formData.title" required>
       </div>
       <div class="col-12">
         <label for="description" class="form-label">Description</label>
@@ -14,10 +14,9 @@
       <div class="col-12">
         <label for="image" class="form-label">Album Cover Image</label>
         <input type="file" class="form-control" id="image" name="image" accept="image/*" @change="handleImageChange">
-        <img v-if="imageUrl" :src="imageUrl" alt="Selected Image" style="max-width: 100%; margin-top: 10px;">
       </div>
       <div class="col-12 mt-4" style="text-align: center;">
-        <button type="submit" class="btn btn-success">
+        <button type="submit" class="btn btn-success" @click="onUpload">
           <i class="fas fa-plus me-2"></i> Add Album
         </button>
       </div> 
@@ -26,44 +25,83 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   data() {
     return {
       formData: {
         title: "",
         description: "",
-        // imageData: null
       },
-      imageUrl: null,
+      image: null,
       user_id: localStorage.getItem('user_id')
     };
   },
   methods: {
     handleImageChange(event) {
-      const file = event.target.files[0];
-      if (file) {
-        this.imageUrl = URL.createObjectURL(file);
-        // this.formData.imageData = file;
+      this.image = event.target.files[0];
+    },
+    onUpload() {
+
+      if (this.formData.title == "" | this.formData.description == ""){
+        this.$store.dispatch('showMessage', 'Please fill in all fields');
+        return;
+      }
+      else if (this.image == null){
+        this.$store.dispatch('showMessage', 'Please select an image');
+        return;
+      }
+      else{
+
+        const fd = new FormData();
+        fd.append('image', this.image, this.image.name);
+        fd.append('title', this.formData.title);
+
+        const token = localStorage.getItem('token');
+
+        axios.post(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/albums/upload-image`, fd, {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(response => {
+          console.log('Image uploaded successfully')
+        })
+        .catch(error => {
+          console.log(error);
+        });
       }
     },
     async submitForm() {
-      const token = localStorage.getItem('token');
-      const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/new-album', {
-							method: 'post',
-							headers: {
-								'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token,
-							},
-							body: JSON.stringify(this.formData)
-						});
-						const data = await response.json();
-						if (response.status != 201) {
-							this.$store.dispatch('showMessage', data.message);
-						}
-						else{
-							this.$store.dispatch('showMessage', data.message);
-              this.$router.push('/studio');
-					}
+      if (this.formData.title == "" | this.formData.description == ""){
+        this.$store.dispatch('showMessage', 'Please fill in all fields');
+        return;
+      }
+      else if (this.image == null){
+        this.$store.dispatch('showMessage', 'Please select an image');
+        return;
+      }
+      else{
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/new-album', {
+                method: 'post',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify(this.formData)
+              });
+              const data = await response.json();
+              if (response.status != 201) {
+                this.$store.dispatch('showMessage', data.message);
+              }
+              else{
+                this.$store.dispatch('showMessage', data.message);
+                this.$router.push('/studio');
+            }
+      }
     }
   },
   name: "CreateAlbum"

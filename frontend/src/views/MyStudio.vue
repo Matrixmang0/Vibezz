@@ -4,7 +4,7 @@
       <h1 class="display-3 mb-4 text-center">My Albums</h1>
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="text-muted">Albums</h2>
-        <a href="#" class="btn btn-success btn-lg">
+        <a href="/create-album" class="btn btn-success btn-lg">
           <i class="fas fa-plus"></i> Add Album
         </a>
       </div>
