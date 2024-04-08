@@ -114,7 +114,7 @@ export default {
     logout(){
       localStorage.removeItem('token');
       localStorage.removeItem('user_id');
-      this.$router.push('/login');
+      this.$router.go('/login');
     }
   },
   name: 'Navbar',

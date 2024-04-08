@@ -45,8 +45,29 @@ class AlbumResource(Resource):
     def put(self):
         pass
 
-    def delete(self):
-        pass
+
+class DeleteAlbumResource(Resource):
+
+    @jwt_required()
+    def delete(self, user_id, album_id):
+        try:
+            if user_id != get_jwt_identity():
+                abort(403, message="You are not authorized to view this page")
+
+            user = User.query.get(user_id)
+            if not user:
+                abort(404, message="User ID: {} doesn't exist".format(user_id))
+
+            album = Album.query.filter_by(id=album_id).first()
+            if not album:
+                abort(404, message="No album found")
+
+            db.session.delete(album)
+            db.session.commit()
+
+            return {"message": "Album deleted successfully"}, 200
+        except Exception as e:
+            abort(500, message=str(e))
 
 
 class AlbumsResource(Resource):

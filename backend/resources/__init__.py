@@ -14,6 +14,7 @@ from backend.resources.user import PassResource
 
 from backend.resources.album import AlbumsResource
 from backend.resources.album import AlbumResource
+from backend.resources.album import DeleteAlbumResource
 
 from backend.resources.image import ImageAlbum
 from backend.resources.image import ImageSong
@@ -25,6 +26,7 @@ api.add_resource(PassResource, "/user/<int:user_id>/edit-pass")
 
 api.add_resource(AlbumsResource, "/<int:user_id>/albums")
 api.add_resource(AlbumResource, "/<int:user_id>/new-album")
+api.add_resource(DeleteAlbumResource, "/<int:user_id>/albums/<int:album_id>/delete")
 
 api.add_resource(ImageAlbum, "/<int:user_id>/albums/upload-image")
 api.add_resource(ImageSong, "/<int:user_id>/albums/upload-image")

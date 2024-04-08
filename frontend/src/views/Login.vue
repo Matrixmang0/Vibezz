@@ -22,13 +22,12 @@ export default {
 						const data = await response.json();
 						if (response.status != 200) {
 							this.$store.dispatch('showMessage', data.message);
-							this.$router.push('/login');
 						}
 						else{
 							localStorage.setItem('token', data.access_token);
 							localStorage.setItem('user_id', data.user_id);
 							this.$store.dispatch('showMessage', data.msg);
-							this.$router.push('/');
+              this.$router.go('/');
 					}
 				}
 		},

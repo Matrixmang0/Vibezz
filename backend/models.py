@@ -67,7 +67,6 @@ class Song(db.Model):
     album_id = db.Column(db.Integer, db.ForeignKey("album.id"), nullable=False)
     lyrics = db.Column(db.Unicode, nullable=False)
     audio = db.Column(db.String, nullable=False)
-    poster = db.Column(db.String, nullable=False)
     genre = db.Column(db.String(100), nullable=False)
     duration = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
