@@ -68,10 +68,9 @@ class Song(db.Model):
     lyrics = db.Column(db.Unicode, nullable=False)
     audio = db.Column(db.String, nullable=False)
     genre = db.Column(db.String(100), nullable=False)
-    duration = db.Column(db.String(100), nullable=False)
     date_created = db.Column(db.DateTime, nullable=False)
-    tot_ratings = db.Column(db.Integer, nullable=False)
-    no_ratings = db.Column(db.Integer, nullable=False)
+    tot_ratings = db.Column(db.Integer, nullable=False, default=0)
+    no_ratings = db.Column(db.Integer, nullable=False, default=0)
     artist = db.relationship("User", lazy=True)
 
 

@@ -10,8 +10,6 @@ post_parser.add_argument("description", type=str, required=True)
 
 
 class AlbumResource(Resource):
-    def get(self):
-        pass
 
     @jwt_required()
     def post(self, user_id):
@@ -44,6 +42,27 @@ class AlbumResource(Resource):
 
     def put(self):
         pass
+
+
+class AlbumName(Resource):
+
+    album_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+    }
+
+    @jwt_required()
+    @marshal_with(album_fields)
+    def get(self, user_id, album_id):
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to view this page")
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, "User ID: {} doesn't exist".format(user_id))
+        album = Album.query.filter_by(id=album_id).first()
+        if not album:
+            abort(404, "Album ID: {} doesn't exist".format(album_id))
+        return album, 200
 
 
 class DeleteAlbumResource(Resource):

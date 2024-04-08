@@ -1,5 +1,5 @@
 <template>
-  <div v-if="albumExists">
+  <div v-if="songExists">
     <div class="container mt-5">
       <h1 class="display-3 mb-4 text-center">My Albums</h1>
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -44,10 +44,10 @@
   </div>
   <div v-else>
     <div class="container new">
-      <h1 class="display-3 text-center">Welcome to MyStudio</h1>
-      <p class="lead text-center">You have not created any albums yet. Click the button below to create your first album.</p>
+      <h1 class="display-3 text-center">{{ album.title }}</h1>
+      <p class="lead text-center">You have not created any songs yet. Click the button below to create your first song in this album.</p>
       <div class="d-flex justify-content-center">
-        <router-link to="/create-album" class="btn btn-success btn-lg">Create Album</router-link>
+        <router-link to="/create-song" class="btn btn-success btn-lg">Create Song</router-link>
       </div>
     </div>
   </div>
@@ -63,16 +63,17 @@ export default {
 				return {
           user_id: localStorage.getItem('user_id'),
 
-          albums: this.$route.meta.data,
+          songs: this.$route.meta.data,
 
-          albumExists: this.$route.meta.albumExists
-          
+          songExists: this.$route.meta.albumExists,
+
+          album: this.$route.meta.album
         }
 		},
     
 
 		methods: {
-				async deleteAlbum(id) {
+				async deleteSong(id) {
           try {
             const token = localStorage.getItem('token');
             const response = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/albums/${id}/delete`, {
@@ -100,7 +101,7 @@ export default {
         }
     },
 
-		name: 'MyStudio'
+		name: 'Album'
 }
 </script>
 
