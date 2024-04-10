@@ -1,39 +1,36 @@
 <template>
   <div v-if="songExists">
     <div class="container mt-5">
-      <h1 class="display-3 mb-4 text-center">My Albums</h1>
+      <h1 class="display-3 mb-4 text-center">{{ album.title }}</h1>
       <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="text-muted">Albums</h2>
-        <router-link to="/create-album" class="btn btn-success btn-lg">
-          <i class="fas fa-plus"></i> Add Album
+        <h2 class="text-muted">Songs</h2>
+        <router-link to="/create-song" class="btn btn-success btn-lg">
+          <i class="fas fa-plus"></i> Add Song
         </router-link>
       </div>
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>Album ID</th>
-            <th>Album Cover</th>
+            <th>Song ID</th>
+            <th>Song Cover</th>
             <th>Title</th>
-            <th>No of Songs</th>
+            <th>Genre</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="album in albums" :key="album.id">
-            <td>{{ album.id }}</td>
+          <tr v-for="song in songs" :key="song.id">
+            <td>{{ song.id }}</td>
             <td>
-              <img :src="'http://127.0.0.1:5000/album/' + album.id" alt="Album Cover" style="width: 100px; height: 100px;" />
+              <img :src="'http://127.0.0.1:5000/song/cover/' + song.id" alt="Song Cover" style="width: 100px; height: 100px;" />
             </td>
-            <td>{{ album.title }}</td>
-            <td>{{ album.description.length }}</td> 
+            <td>{{ song.title }}</td>
+            <td>{{ song.genre }}</td> 
             <td>
-              <a :href="'/album/' + album.id" class="btn btn-info me-2">
-                  <i class="fas fa-search"></i> Show
-              </a>
               <a href="" class="btn btn-warning me-2">
                 <i class="fas fa-edit"></i> Edit
               </a>
-              <button type="button" class="btn btn-danger" @click="deleteAlbum(album.id)">
+              <button type="button" class="btn btn-danger" @click="deleteSong(song.id)">
                 <i class="fas fa-trash"></i> Delete
               </button>
             </td>
@@ -65,7 +62,7 @@ export default {
 
           songs: this.$route.meta.data,
 
-          songExists: this.$route.meta.albumExists,
+          songExists: this.$route.meta.songExists,
 
           album: this.$route.meta.album
         }
@@ -76,7 +73,7 @@ export default {
 				async deleteSong(id) {
           try {
             const token = localStorage.getItem('token');
-            const response = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/albums/${id}/delete`, {
+            const response = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/songs/${id}/delete`, {
               method: 'delete',
               headers: {
                 'Content-Type': 'application/json',

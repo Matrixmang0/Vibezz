@@ -23,5 +23,19 @@ def album_cover(album_id):
     return send_from_directory(app.config["UPLOAD_FOLDER_ALBUM"], filename)
 
 
+@app.route("/song/cover/<song_id>")
+def song_cover(song_id):
+    song = Song.query.get(song_id)
+    filename = secure_filename(song.title) + ".jpg"
+    return send_from_directory(app.config["UPLOAD_FOLDER_SONG"], filename)
+
+
+@app.route("/song/audio/<song_id>")
+def song_audio(song_id):
+    song = Song.query.get(song_id)
+    filename = secure_filename(song.title) + ".mp3"
+    return send_from_directory(app.config["UPLOAD_FOLDER_AUDIO"], filename)
+
+
 if __name__ == "__main__":
     app.run(debug=True)

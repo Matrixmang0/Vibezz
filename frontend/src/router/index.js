@@ -9,6 +9,7 @@ import ChangePassword from '../views/ChangePassword.vue';
 import MyStudio from '../views/MyStudio.vue';
 import CreateAlbum from '../views/CreateAlbum.vue';
 import Album from '../views/Album.vue';
+import CreateSong from '../views/CreateSong.vue';
 
 const routes = [
 
@@ -199,8 +200,8 @@ const routes = [
 
         if (response1.ok) {
           const data = await response1.json();
-          if (data.msg === "No songs found"){
-            console.log("No Album found");
+          if (data.msg === "No Albums found"){
+            console.log("No Albums found");
             this.$router.go();
           }
           else{
@@ -222,6 +223,7 @@ const routes = [
           const data = await response2.json();
           if (data.msg === "No songs found"){
             to.meta.songExists = false;
+            console.log("No songs found");
             next();
           }
           else{
@@ -232,11 +234,54 @@ const routes = [
         } else {
           console.error('Failed to fetch songs data:', response2.status);
         }
+
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     },
   },
+
+  {
+      path: '/create-song',
+      name: 'CreateSong',
+      component: CreateSong,
+      meta: {
+        title: 'Create Song'
+      },
+      beforeEnter: async (to, from, next) => {
+      try {
+        if (!localStorage.getItem('token')) {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/' + localStorage.getItem('user_id') +'/albums', {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.msg === "No albums found"){
+            next();
+          }
+          else{
+            to.meta.albums = data;
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+  }
 ]
 
 const router = createRouter({

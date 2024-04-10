@@ -40,7 +40,8 @@ class ImageAlbum(Resource):
     def allowed_file(self, filename):
         return (
             "." in filename
-            and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+            and filename.rsplit(".", 1)[1].lower()
+            in app.config["ALLOWED_EXTENSIONS_IMAGE"]
         )
 
 
@@ -57,26 +58,52 @@ class ImageSong(Resource):
 
         # check if the post request has the file part
         if "image" not in request.files:
-            return {"error": "No file part"}, 400
+            return {"error": "No image file"}, 400
 
-        file = request.files["image"]
+        if "audio" not in request.files:
+            return {"error": "No audio file"}, 400
+
+        image = request.files["image"]
+        audio = request.files["audio"]
 
         # if user does not select file, browser also submit an empty part without filename
-        if file.filename == "":
-            return {"error": "No selected file"}, 400
+        if image.filename == "":
+            return {"error": "No selected image file"}, 400
+
+        if audio.filename == "":
+            return {"error": "No selected audio file"}, 400
 
         title = request.form.get("title")
 
-        if file and self.allowed_file(file.filename):
+        if (
+            image
+            and self.allowed_file_image(image.filename)
+            and audio
+            and self.allowed_file_audio(audio.filename)
+        ):
             # Generate a safe filename based on the album title
-            filename = secure_filename(title) + os.path.splitext(file.filename)[1]
-            file.save(os.path.join(app.config["UPLOAD_FOLDER_SONG"], filename))
-            return {"message": "File uploaded successfully", "filename": filename}, 201
+            filename1 = secure_filename(title) + os.path.splitext(image.filename)[1]
+            filename2 = secure_filename(title) + os.path.splitext(audio.filename)[1]
+            image.save(os.path.join(app.config["UPLOAD_FOLDER_SONG"], filename1))
+            audio.save(os.path.join(app.config["UPLOAD_FOLDER_AUDIO"], filename2))
+            return {
+                "message": "Image and Audio file uploaded successfully",
+                "filename1": filename1,
+                "filename": filename2,
+            }, 201
 
         return {"error": "Invalid file type"}, 400
 
-    def allowed_file(self, filename):
+    def allowed_file_image(self, filename):
         return (
             "." in filename
-            and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+            and filename.rsplit(".", 1)[1].lower()
+            in app.config["ALLOWED_EXTENSIONS_IMAGE"]
+        )
+
+    def allowed_file_audio(self, filename):
+        return (
+            "." in filename
+            and filename.rsplit(".", 1)[1].lower()
+            in app.config["ALLOWED_EXTENSIONS_AUDIO"]
         )

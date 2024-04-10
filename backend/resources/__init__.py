@@ -18,9 +18,11 @@ from backend.resources.album import AlbumName
 from backend.resources.album import DeleteAlbumResource
 
 from backend.resources.song import SongsResource
+from backend.resources.song import SongResource
 
 from backend.resources.image import ImageAlbum
 from backend.resources.image import ImageSong
+from backend.resources.song import DeleteSongResource
 
 api.add_resource(LoginResource, "/login")
 api.add_resource(UserResource, "/user/<int:user_id>")
@@ -33,6 +35,8 @@ api.add_resource(AlbumName, "/<int:user_id>/albums/<int:album_id>/info")
 api.add_resource(DeleteAlbumResource, "/<int:user_id>/albums/<int:album_id>/delete")
 
 api.add_resource(SongsResource, "/<int:user_id>/album/<int:album_id>")
+api.add_resource(SongResource, "/<int:user_id>/song")
+api.add_resource(DeleteSongResource, "/<int:user_id>/songs/<int:song_id>/delete")
 
 api.add_resource(ImageAlbum, "/<int:user_id>/albums/upload-image")
-api.add_resource(ImageSong, "/<int:user_id>/albums/upload-image")
+api.add_resource(ImageSong, "/<int:user_id>/songs/upload-image")

@@ -95,6 +95,7 @@ class AlbumsResource(Resource):
         "id": fields.Integer,
         "title": fields.String,
         "description": fields.String,
+        "songs": fields.List(fields.String),
     }
 
     @jwt_required()

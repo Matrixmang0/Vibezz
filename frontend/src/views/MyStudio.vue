@@ -25,7 +25,7 @@
               <img :src="'http://127.0.0.1:5000/album/' + album.id" alt="Album Cover" style="width: 100px; height: 100px;" />
             </td>
             <td>{{ album.title }}</td>
-            <td>{{ album.description.length }}</td> 
+            <td>{{ getNumberOfSongs(album) }}</td> 
             <td>
               <a :href="'/album/' + album.id" class="btn btn-info me-2">
                   <i class="fas fa-search"></i> Show
@@ -72,6 +72,13 @@ export default {
     
 
 		methods: {
+        getNumberOfSongs(album) {
+          if (album.songs && album.songs.length) {
+            return album.songs.length;
+          } else {
+            return 0; // Return 0 if album.songs is undefined or empty
+          }
+        },
 				async deleteAlbum(id) {
           try {
             const token = localStorage.getItem('token');
