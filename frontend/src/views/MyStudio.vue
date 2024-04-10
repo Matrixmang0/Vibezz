@@ -30,7 +30,7 @@
               <a :href="'/album/' + album.id" class="btn btn-info me-2">
                   <i class="fas fa-search"></i> Show
               </a>
-              <a href="" class="btn btn-warning me-2">
+              <a :href="'/album/edit/' + album.id" class="btn btn-warning me-2">
                 <i class="fas fa-edit"></i> Edit
               </a>
               <button type="button" class="btn btn-danger" @click="deleteAlbum(album.id)">
