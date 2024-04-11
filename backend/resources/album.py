@@ -161,3 +161,33 @@ class LibraryResource(Resource):
         else:
             print("No albums found")
             return ({"msg": "No albums found"}, 200)
+
+
+class UserAlbumResource(Resource):
+
+    artist_fields = {
+        "id": fields.Integer,
+        "name": fields.String,
+    }
+    song_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+        "genre": fields.String,
+    }
+    album_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+        "description": fields.String,
+        "artist": fields.Nested(artist_fields),
+        "songs": fields.List(fields.Nested(song_fields)),
+    }
+
+    def get(self, album_id):
+
+        album = Album.query.get(album_id)
+        if album:
+            album = marshal(album, self.album_fields)
+            return album, 200
+        else:
+            print("No album found")
+            return ({"msg": "No album found"}, 200)

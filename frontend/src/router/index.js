@@ -12,6 +12,7 @@ import EditAlbum from '../views/EditAlbum.vue';
 import Album from '../views/Album.vue';
 import CreateSong from '../views/CreateSong.vue';
 import EditSong from '../views/EditSong.vue';
+import UserAlbum from '../views/UserAlbum.vue';
 
 const routes = [
 
@@ -409,7 +410,49 @@ const routes = [
         console.error('Error fetching data:', error);
       }
     }
-  }
+  },
+
+    {
+    path: '/user/album/:albumId',
+    name: 'UserAlbum',
+    component: UserAlbum,
+    meta: {
+      title: 'User Album'
+    },  
+    beforeEnter: async (to, from, next) => {
+      try {
+
+        const token = localStorage.getItem('token');
+        const albumId = to.params.albumId;
+
+        const response1 = await fetch(`http://127.0.0.1:5000/api/album/${albumId}`, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response1.ok) {
+          const data = await response1.json();
+          if (data.msg === "No Albums found"){
+            console.log("No Albums found");
+            this.$router.go();
+          }
+          else{
+            to.meta.album = data;
+            console.log(to.meta.album); 
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response1.status);
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+  },
 ]
 
 const router = createRouter({

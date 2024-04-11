@@ -13,6 +13,7 @@ from backend.resources.user import UsersResource
 from backend.resources.user import PassResource
 
 from backend.resources.album import AlbumsResource
+from backend.resources.album import UserAlbumResource
 from backend.resources.album import LibraryResource
 from backend.resources.album import AlbumResource
 from backend.resources.album import AlbumName
@@ -34,6 +35,7 @@ api.add_resource(UsersResource, "/users")
 api.add_resource(PassResource, "/user/<int:user_id>/edit-pass")
 
 api.add_resource(AlbumsResource, "/<int:user_id>/albums")
+api.add_resource(UserAlbumResource, "/album/<int:album_id>")
 api.add_resource(LibraryResource, "/albums")
 api.add_resource(AlbumResource, "/<int:user_id>/new-album")
 api.add_resource(EditAlbumResource, "/<int:user_id>/edit-album/<int:album_id>")

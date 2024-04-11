@@ -53,7 +53,7 @@
 
   <div class="showcase-books">
       <div v-for="album in filtered_albums" class="albums">
-        <h2>{{album.title}}</h2>
+        <a :href="'user/album/' + album.id"><h2>{{ album.title }}</h2></a>
         <hr>
            <div class="flex-container">
              <div class="arrow arrow-left" onclick="scrollList('left')"><i class="fa-solid fa-arrow-left"></i></div>
