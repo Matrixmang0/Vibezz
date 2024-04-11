@@ -16,6 +16,7 @@ from backend.resources.album import AlbumsResource
 from backend.resources.album import AlbumResource
 from backend.resources.album import AlbumName
 from backend.resources.album import DeleteAlbumResource
+from backend.resources.album import EditAlbumResource
 
 from backend.resources.song import SongsResource
 from backend.resources.song import SongResource
@@ -31,6 +32,7 @@ api.add_resource(PassResource, "/user/<int:user_id>/edit-pass")
 
 api.add_resource(AlbumsResource, "/<int:user_id>/albums")
 api.add_resource(AlbumResource, "/<int:user_id>/new-album")
+api.add_resource(EditAlbumResource, "/<int:user_id>/edit-album/<int:album_id>")
 api.add_resource(AlbumName, "/<int:user_id>/albums/<int:album_id>/info")
 api.add_resource(DeleteAlbumResource, "/<int:user_id>/albums/<int:album_id>/delete")
 

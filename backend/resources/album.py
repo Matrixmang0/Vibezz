@@ -40,8 +40,24 @@ class AlbumResource(Resource):
 
         return ({"message": "Album created successfully"}, 201)
 
-    def put(self):
-        pass
+
+class EditAlbumResource(Resource):
+
+    @jwt_required()
+    def put(self, user_id, album_id):
+        if user_id != get_jwt_identity():
+            abort(403, message="You are not authorized to view this page")
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, message="User ID: {} doesn't exist".format(user_id))
+        album = Album.query.filter_by(id=album_id).first()
+        if not album:
+            abort(404, message="No album found")
+        args = post_parser.parse_args()
+        album.title = args["title"]
+        album.description = args["description"]
+        db.session.commit()
+        return {"message": "Album updated successfully"}, 200
 
 
 class AlbumName(Resource):
@@ -49,6 +65,7 @@ class AlbumName(Resource):
     album_fields = {
         "id": fields.Integer,
         "title": fields.String,
+        "description": fields.String,
     }
 
     @jwt_required()

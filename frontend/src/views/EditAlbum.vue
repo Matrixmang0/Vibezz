@@ -14,7 +14,7 @@
       </div>
       <div class="col-12">
         <label for="image" class="form-label">Album Cover Image</label>
-        <img :src="'http://127.0.0.1:5000/album/' + album.id" alt="Album Cover">
+        <img :src="'http://127.0.0.1:5000/album/' + formData.id" class="album-image" alt="Album Cover" style="width: 200px; height: 300px;">
       </div>
       <div class="col-12">
         <label for="image" class="form-label">New Cover Image</label>
@@ -31,6 +31,84 @@
 </template>
 
 <script>
+
+import axios from 'axios';
+
+export default {
+  data() {
+    return {
+      formData: {
+        id: this.$route.meta.album.id,
+        title: this.$route.meta.album.title,
+        description: this.$route.meta.album.description
+      },
+      image: null,
+      user_id: localStorage.getItem('user_id')
+    };
+  },
+  methods: {
+    handleImageChange(event) {
+      this.image = event.target.files[0];
+    },
+    onUpload() {
+
+      if (this.formData.title == "" | this.formData.description == ""){
+        this.$store.dispatch('showMessage', 'Please fill in all fields');
+        return;
+      }
+      else if (this.image == null){
+        return;
+      }
+      else{
+
+        const fd = new FormData();
+        fd.append('image', this.image, this.image.name);
+        fd.append('title', this.formData.title);
+
+        const token = localStorage.getItem('token');
+
+        axios.post(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/albums/upload-image`, fd, {
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data'
+          }
+        })
+        .then(response => {
+          console.log('Image uploaded successfully')
+        })
+        .catch(error => {
+          console.log(error);
+        });
+      }
+    },
+    async submitForm() {
+      if (this.formData.title == "" | this.formData.description == ""){
+        this.$store.dispatch('showMessage', 'Please fill in all fields');
+        return;
+      }
+      else{
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/edit-album/'+this.formData.id, {
+                method: 'put',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify(this.formData)
+              });
+              const data = await response.json();
+              if (response.status != 201) {
+                this.$store.dispatch('showMessage', data.message);
+              }
+              else{
+                this.$store.dispatch('showMessage', data.message);
+                this.$router.push('/studio');
+            }
+      }
+    }
+  },
+  name: "EditAlbum"
+};
 </script>
 
 <style scoped>
@@ -48,6 +126,11 @@
     .btn-success:hover {
       background-color: #218838; /* Darker shade on hover */
       border-color: #218838; /* Darker shade on hover */
+    }
+
+    .album-image {
+      margin-top: 10px;
+      margin-left: 40px; /* Adjust as needed */
     }
 
 </style>
