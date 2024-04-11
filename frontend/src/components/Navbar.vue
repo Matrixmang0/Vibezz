@@ -24,9 +24,23 @@
           
         </ul>
 
-        <!-- {% include 'searchbar.html' with context %}
+        <div v-if="this.$route.name === 'Home'" class="search-box">
+          <form>
+            <div class="input-group mb-3">
+              <select v-model="selectedParameter" class="form-select">
+                <option value="" disabled selected>Select Parameter</option>
+                <option value=0>Album</option>
+                <option value=1>Song</option>
+              </select>
+              <input v-model="searchQuery" class="form-control" type="text" placeholder="Search" aria-label="Text input with dropdown button">
+              <button class="btn btn-outline-success" type="submit"><i class="fa-solid fa-x"></i></button>
+            </div>
 
-        {% if request.endpoint == 'show_book' %}
+          </form>
+        </div>
+
+
+        <!-- {% if request.endpoint == 'show_book' %}
               <div class="text-center text-white">
                   <h1 class="display-5">{{book.title}}</h1>
               </div>
@@ -103,20 +117,44 @@
 </template>
 
 <script>
+
+import { mapState, mapActions } from 'vuex';
+
+
 export default {
   data() {
     return {
       user_id: localStorage.getItem('user_id'),
+      selectedParameter: '',
+      searchQuery: ''
     }
   },
+
+  watch: {
+    selectedParameter() {
+      this.updateParameter();
+    },
+    searchQuery() {
+      this.updateQuery();
+    }
+  },
+
   methods:
   {
     logout(){
       localStorage.removeItem('token');
       localStorage.removeItem('user_id');
       this.$router.go('/login');
+    },
+
+    updateParameter() {
+      this.$store.dispatch('updateSelectedParameter', this.selectedParameter);
+    },
+    updateQuery() {
+      this.$store.dispatch('updateSearchQuery', this.searchQuery);
     }
   },
+
   name: 'Navbar',
 }
 </script>
@@ -124,6 +162,11 @@ export default {
 <style scoped>
   .logout-item {
     background-color: #ff6347; /* Red background color */
+  }
+
+  .search-box {
+    justify-content: center;
+    margin-top: 15px;
   }
 
   /* If you prefer inline styles */

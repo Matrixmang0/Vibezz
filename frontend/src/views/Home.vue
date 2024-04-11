@@ -8,29 +8,29 @@
       </div>
       <div class="carousel-inner">
         <div class="carousel-item active" data-bs-interval="3000">
-          <div class="carousel-image"><img src="./static/carousel/carousel1.jpg" class="d-block w-100" alt="..."></div>
+          <div class="carousel-image"><img src='http://127.0.0.1:5000/carousel/1' class="d-block w-100" alt="..."></div>
           <div class="carousel-caption d-none d-md-block">
-            <div class="text-black">
-              <h5>Universal Library</h5>
-              <p>One stop library for every bibiliophiles</p>
+            <div class="text-white">
+              <h5>Discover Your Sound</h5>
+              <p>Pump up the Volume with Our Diverse Music Library</p>
             </div>
           </div>
         </div>
         <div class="carousel-item"  data-bs-interval="3000">
-          <div class="carousel-image"><img src="./static/carousel/carousel2.jpg" class="d-block w-100" alt="..."></div>
+          <div class="carousel-image"><img src='http://127.0.0.1:5000/carousel/2' class="d-block w-100" alt="..."></div>
           <div class="carousel-caption d-none d-md-block">
-            <div class="text-black">
-              <h5>Guaranteed Price</h5>
-              <p>Lowest ever price available on the internet</p>
+            <div class="text-white">
+              <h5>A World of Music Awaits</h5>
+              <p>Indulge Your Ears with Endless Musical Delights</p>
             </div>
           </div>
         </div>
         <div class="carousel-item"  data-bs-interval="3000">
-          <div class="carousel-image"><img src="./static/carousel/carousel3.jpg" class="d-block w-100" alt="..."></div>
+          <div class="carousel-image"><img src='http://127.0.0.1:5000/carousel/3' class="d-block w-100" alt="..."></div>
           <div class="carousel-caption d-none d-md-block">
-            <div class="text-black">
-              <h5>Easy Borrowing</h5>
-              <p>Quick access on book borrow requests</p>
+            <div class="text-white">
+              <h5>Explore Infinite Beats</h5>
+              <p>Your Gateway to Music: Listen, Love, Repeat</p>
             </div>
           </div>
         </div>
@@ -52,81 +52,87 @@
   <hr>
 
   <div class="showcase-books">
-    {% for genre in genres %}
-      <div class="genres">
-        <h2>{{genre.name}}</h2>
+      <div v-for="album in filtered_albums" class="albums">
+        <h2>{{album.title}}</h2>
         <hr>
            <div class="flex-container">
              <div class="arrow arrow-left" onclick="scrollList('left')"><i class="fa-solid fa-arrow-left"></i></div>
              <div class="scroll-container">
-                   {% for book in genre.books %}
-                    {% if (parameter=="book" and query.lower() in book.title.lower()) or (parameter == "price" and query >= book.price) or (parameter=="genre") or (not parameter) %}
-                        <div class="card" >
-                          <a href="{{ url_for("book", book_id=book.id) }}"><img src="{{book.image}}" class="card-img-top" height="250px" width="500px" alt="..."></a>
+                    <div v-for="song in album.songs" class="card" >
+                          <a href=""><img :src="'http://127.0.0.1:5000/song/cover/'+ song.id " class="card-img-top" height="200px" width="300px" alt="..."></a>
                           <div class="card-body">
-                            <a href="{{ url_for("book", book_id=book.id) }}">
-                              <h6 class="card-title"><strong>{{ book.title }}</strong></h6>
+                            <a href="">
+                              <h6 class="card-title"><strong>{{ song.title }}</strong></h6>
                             </a>
-                            <p class="card-text"><span class="text-muted">Price :</span>&nbsp;&nbsp;<span style="color:red;">&#8377;{{ book.price }}</span></p>
                             <div class="card-buttons">
-                              {% if book.quantity > 0 %}
-                                <a href="{{ url_for("add_to_cart", book_id=book.id) }}" method="post" class="btn btn-success btn-sm">Add to cart</a>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{book.id}}">Borrow</button>
-             
-                                <!-- Modal -->
-                                <div class="modal fade" id="staticBackdrop{{ book.id }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header bg-secondary bg-gradient text-white">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Select Borrowing Duration</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p class="lead">Choose the number of days you want to borrow the book "{{ book.title }}".</p>
-                                                <form action="{{ url_for('add_to_request', book_id=book.id) }}" method="post">
-                                                    <div class="mb-3">
-                                                        <label for="daysRequested" class="form-label">Number of Days:</label>
-                                                        <input type="number" class="form-control" id="daysRequested" name="days_requested" value="14" min="7" max="60">
-                                                    </div>
-                                                    <div class="text-end">
-                                                        <button type="submit" class="btn btn-primary">Request</button>
-                                                    </div>
-                                                </form>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-             
+                              <!-- {% if book.quantity > 0 %}
+                                <a href="" method="post" class="btn btn-success btn-sm">Add to cart</a>
+                                <button class="btn btn-primary btn-sm">Borrow</button>            
                               {% else %}
                                 <button class="btn btn-outline-danger btn-sm" disabled><i class="fa-solid fa-x"></i>  Out of stock</button>
-                              {% endif %}
+                              {% endif %} -->
                             </div>
                           </div>
                         </div>
-                    {% endif %}
-                   {% endfor %}
              </div>
              <div class="arrow arrow-right" onclick="scrollList('right')"><i class="fa-solid fa-arrow-right"></i></div>
            </div>
-            </div>
-               {% endfor %}
-             </div>
-         </div>
-{% endblock %}
+      </div>
+  </div>
 </template>
 
 <script>
+
+import { mapState} from 'vuex';
+
 export default {
+  data(){
+    return {
+      albums: this.$route.meta.albums,
+      f_albums: ''
+    }
+  },
+  computed: {
+    ...mapState(['searchQuery', 'selectedParameter']),
+
+      filtered_albums() {
+        
+        const parameter = this.$store.state.selectedParameter;
+        const query = this.$store.state.searchQuery.toLowerCase();
+ 
+        if (parameter == 0 && query){
+          this.f_albums = this.albums.filter(album => album.title.toLowerCase().includes(query));
+        }
+        else if (parameter == 1 && query){
+          this.f_albums = this.albums.map(album => {
+            return {
+              ...album,
+              songs: album.songs.filter(song => song.title.toLowerCase().includes(query))
+            };
+          }).filter(album => album.songs.length > 0);
+        }
+        else{
+          this.f_albums = this.albums;
+        }
+
+        return this.f_albums;
+      },
+  },
+
   name: 'Home',
 }
 </script>
 
 <style scoped>
 
+  h2 {
+    text-align: left;
+    margin: 20px;
+  }
+
   .carousel-image {
     width: 100%;
-    height: 300px;
+    height: 420px;
   }
 
   .carousel {
@@ -145,7 +151,7 @@ export default {
     justify-content: center;
   }
 
-  .genres {
+  .albums {
     margin: 20px 0 20px 0;
   }
 
@@ -164,8 +170,8 @@ export default {
   .card {
     flex: 0 0 auto;
     margin: 0 10px;
-    width: 13rem;
-    height: 25rem;
+    width: 12rem;
+    height: 16rem;
   }
 
   .card-buttons {

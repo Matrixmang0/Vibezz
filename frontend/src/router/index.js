@@ -18,7 +18,37 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    beforeEnter: async (to, from, next) => {
+      try {
+        if (!localStorage.getItem('token')) {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+
+        const response = await fetch('http://127.0.0.1:5000/api/albums', {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          to.meta.albums = data;
+          console.log(to.meta.albums);
+          next();
+        } else {
+          console.error('Failed to fetch user data:', response.status);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
   },
 
   {
