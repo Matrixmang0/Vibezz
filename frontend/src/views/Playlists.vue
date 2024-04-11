@@ -1,5 +1,5 @@
 <template>
-  <div v-if="albumExists">
+  <div v-if="playlistExists">
     <div class="container mt-5">
       <h1 class="display-3 mb-4 text-center">My Albums</h1>
       <div class="d-flex justify-content-between align-items-center mb-3">
@@ -12,10 +12,10 @@
         <table class="table table-striped table-hover">
           <thead>
             <tr>
-              <th>Album ID</th>
+              <th>Song ID</th>
               <th>Album Cover</th>
               <th>Title</th>
-              <th>No of Songs</th>
+              <th>Genre</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -46,8 +46,8 @@
   </div>
   <div v-else>
     <div class="container new">
-      <h1 class="display-3 text-center">Welcome to MyStudio</h1>
-      <p class="lead text-center">You have not created any albums yet. Click the button below to create your first album.</p>
+      <h1 class="display-3 text-center">Welcome to Playlists</h1>
+      <p class="lead text-center">You have not created any playlists yet. Click the button below to create your first playlist.</p>
       <div class="d-flex justify-content-center">
         <router-link to="/create-album" class="btn btn-primary btn-lg">Create Album</router-link>
       </div>
@@ -60,8 +60,8 @@ export default {
   data() {
     return {
       user_id: localStorage.getItem('user_id'),
-      albums: this.$route.meta.data,
-      albumExists: this.$route.meta.albumExists
+      aplaylists: this.$route.meta.playlist,
+      playlistExists: this.$route.meta.playlistExists
     }
   },
   methods: {
@@ -95,7 +95,7 @@ export default {
       }
     }
   },
-  name: 'MyStudio'
+  name: 'Playlists'
 }
 </script>
 

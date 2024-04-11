@@ -161,11 +161,32 @@ class SongsResource(Resource):
             print("No songs found")
             return ({"msg": "No songs found"}, 200)
 
-    def post(self):
-        pass
 
-    def put(self):
-        pass
+class SongPageResource(Resource):
 
-    def delete(self):
-        pass
+    artist_fields = {
+        "id": fields.Integer,
+        "name": fields.String,
+    }
+
+    album_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+    }
+
+    song_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+        "lyrics": fields.String,
+        "genre": fields.String,
+        "artist": fields.Nested(artist_fields),
+        "album": fields.Nested(album_fields),
+    }
+
+    def get(self, song_id):
+
+        song = Song.query.get(song_id)
+        if not song:
+            abort(404, "Song ID: {} doesn't exist".format(song_id))
+
+        return marshal(song, self.song_fields), 200

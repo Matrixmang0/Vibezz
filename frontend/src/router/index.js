@@ -13,6 +13,8 @@ import Album from '../views/Album.vue';
 import CreateSong from '../views/CreateSong.vue';
 import EditSong from '../views/EditSong.vue';
 import UserAlbum from '../views/UserAlbum.vue';
+import Song from '../views/Song.vue';
+import Playlists from '../views/Playlists.vue';
 
 const routes = [
 
@@ -441,13 +443,97 @@ const routes = [
           }
           else{
             to.meta.album = data;
-            console.log(to.meta.album); 
             next();
           }
         } else {
           console.error('Failed to fetch album data:', response1.status);
         }
 
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+  },
+
+  {
+    path: '/play/song/:songId',
+    name: 'Song',
+    component: Song,
+    meta: {
+      title: 'Song'
+    },  
+    beforeEnter: async (to, from, next) => {
+      try {
+
+        const token = localStorage.getItem('token');
+        const songId = to.params.songId;
+
+        const response1 = await fetch(`http://127.0.0.1:5000/api/song/${songId}`, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response1.ok) {
+          const data = await response1.json();
+          if (data.msg === "No Songs found"){
+            console.log("No Songs found");
+            this.$router.go();
+          }
+          else{
+            to.meta.song = data;
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response1.status);
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+  },
+
+  {
+    path: '/playlists',
+    name: 'Playlists',
+    component: Playlists,
+    meta: {
+      title: 'Playlists'
+    },  
+    beforeEnter: async (to, from, next) => {
+      try {
+        if (!localStorage.getItem('token')) {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/' + localStorage.getItem('user_id') +'/playlists', {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.msg === "No playlists found"){
+            to.meta.playlistExists = false;
+            next();
+          }
+          else{
+            to.meta.playlistExists = true;
+            to.meta.playlists = data;
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response.status);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
