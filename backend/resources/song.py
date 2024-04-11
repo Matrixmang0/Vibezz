@@ -15,9 +15,6 @@ post_parser.add_argument("lyrics", type=str, required=True)
 
 class SongResource(Resource):
 
-    def get(self):
-        pass
-
     @jwt_required()
     def post(self, user_id):
 
@@ -55,6 +52,61 @@ class SongResource(Resource):
 
     def put(self):
         pass
+
+
+class GetSongResource(Resource):
+
+    song_fields = {
+        "id": fields.Integer,
+        "title": fields.String,
+        "lyrics": fields.String,
+        "genre": fields.String,
+        "album_id": fields.Integer,
+    }
+
+    @jwt_required()
+    def get(self, user_id, song_id):
+
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to view this profile")
+
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, "User ID: {} doesn't exist".format(user_id))
+
+        song = Song.query.get(song_id)
+        if not song:
+            abort(404, "Song ID: {} doesn't exist".format(song_id))
+
+        return marshal(song, self.song_fields), 200
+
+
+class EditSongResource(Resource):
+
+    @jwt_required()
+    def put(self, user_id, song_id):
+
+        if user_id != get_jwt_identity():
+            abort(403, "You are not authorized to view this profile")
+
+        user = User.query.get(user_id)
+        if not user:
+            abort(404, "User ID: {} doesn't exist".format(user_id))
+
+        song = Song.query.get(song_id)
+        if not song:
+            abort(404, "Song ID: {} doesn't exist".format(song_id))
+
+        args = post_parser.parse_args()
+
+        song.title = args["title"]
+        song.genre = args["genre"]
+        song.lyrics = args["lyrics"]
+        song.album_id = args["album_id"]
+
+        db.session.commit()
+
+        return ({"message": "Song updated successfully"}, 200)
 
 
 class DeleteSongResource(Resource):

@@ -340,7 +340,7 @@ const routes = [
 
         const token = localStorage.getItem('token');
 
-        const response = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/albums/${to.params.albumId}/info`, {
+        const response1 = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/songs/${to.params.songId}`, {
           method: 'get',
           headers: {
             'Content-Type': 'application/json',
@@ -348,12 +348,32 @@ const routes = [
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          to.meta.album = data;
-          next();
+        if (response1.ok) {
+          const data = await response1.json();
+          to.meta.song = data;
         } else {
-          console.error('Failed to fetch user data:', response.status);
+          console.error('Failed to fetch user data:', response1.status);
+        }
+
+        const response2 = await fetch('http://127.0.0.1:5000/api/' + localStorage.getItem('user_id') +'/albums', {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response2.ok) {
+          const data = await response2.json();
+          if (data.msg === "No albums found"){
+            next();
+          }
+          else{
+            to.meta.albums = data;
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response2.status);
         }
       } catch (error) {
         console.error('Error fetching data:', error);

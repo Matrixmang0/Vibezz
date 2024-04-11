@@ -27,7 +27,7 @@
             <td>{{ song.title }}</td>
             <td>{{ song.genre }}</td> 
             <td>
-              <a href="" class="btn btn-warning me-2">
+              <a :href="'/song/edit/'+song.id" class="btn btn-warning me-2">
                 <i class="fas fa-edit"></i> Edit
               </a>
               <button type="button" class="btn btn-danger" @click="deleteSong(song.id)">

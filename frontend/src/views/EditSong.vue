@@ -1,6 +1,6 @@
 <template>
   <div class="container mt-5">
-    <h1 class="display-3 mb-4 text-center">Add Song</h1>
+    <h1 class="display-3 mb-4 text-center">Edit Song</h1>
 
     <form @submit.prevent="submitForm" enctype="multipart/form-data" method="post" class="row g-3" >
       <div class="col-md-6">
@@ -16,13 +16,18 @@
 
         <div class="mb-4">
           <label for="album_id" class="form-label"><strong class="text-muted">Album</strong></label>
-          <select class="form-select" id="album_id" name="album_id" placeholder="Select Album" v-model="formData.album_id">
+          <select class="form-select" id="album_id" name="album_id" v-model="formData.album_id">
             <option v-for="album in albums" :key="album.id" :value="album.id">{{ album.title }}</option>
           </select>
         </div>
 
         <div class="mb-4">
           <label for="image" class="form-label"><strong class="text-muted">Cover Image</strong></label>
+                  <img :src="'http://127.0.0.1:5000/song/cover/' + formData.id" class="song-image" alt="Album Cover" style="width: 200px; height: 300px;">
+        </div>
+
+        <div class="mb-4">
+          <label for="image" class="form-label"><strong class="text-muted">New Cover Image</strong></label>
           <input type="file" class="form-control" name="image" @change="handleImageChange" required>
         </div>
       </div>
@@ -30,18 +35,26 @@
       <div class="col-md-6">
         <div class="mb-4">
           <label for="lyrics" class="form-label"><strong class="text-muted">Lyrics</strong></label>
-          <textarea class="form-control" id="lyrics" name="lyrics" rows="9" v-model="formData.lyrics" required></textarea>
+          <textarea class="form-control" id="lyrics" name="lyrics" rows="18" v-model="formData.lyrics" required></textarea>
         </div>
 
         <div class="mb-4">
           <label for="content" class="form-label"><strong class="text-muted">Audio</strong></label>
           <input type="file" class="form-control" name="audio" @change="handleAudioChange" required>
         </div>
+
+        <div class="mb-4">
+          <label for="audio" class="form-label"><strong class="text-muted">Song Audio</strong></label>
+
+          <audio controls controlsList="nodownload">
+            <source :src="'http://127.0.0.1:5000/song/audio/' + formData.id" type="audio/mpeg">
+          </audio>
+        </div>
       </div>
 
       <div class="mt-4 text-center">
           <button type="submit" class="btn btn-success">
-            <i class="fas fa-plus me-2"></i> Add Song
+            <i class="fa-solid fa-pen-to-square"></i> Edit Song
           </button>
         </div>
     </form>
@@ -56,10 +69,11 @@ export default {
   data() {
     return {
       formData: {
-        title: "",
-        genre: "",
-        album_id: "",
-        lyrics: "",
+        id: this.$route.meta.song.id,
+        title: this.$route.meta.song.title,
+        genre: this.$route.meta.song.genre,
+        album_id: this.$route.meta.song.album_id,
+        lyrics: this.$route.meta.song.lyrics,
       },
       fileData: {
         image: null,
@@ -87,8 +101,8 @@ export default {
       }
       else{
         const token = localStorage.getItem('token');
-        const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/song', {
-                method: 'post',
+        const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/edit-song/'+this.formData.id, {
+                method: 'put',
                 headers: {
                   'Content-Type': 'application/json',
                   'Authorization': 'Bearer ' + token,
@@ -124,7 +138,7 @@ export default {
       }
     }
   },
-  name: "CreateSong"
+  name: "EditSong"
 };
 </script>
 
@@ -148,6 +162,12 @@ export default {
   }
   .display-3 {
     margin-bottom: 50px /* Dark gray heading */
+  }
+  .song-image {
+    margin-left: 60px; /* Adjust as needed */
+  }
+  audio {
+    width: 100%; /* Adjust the width as needed */
   }
 
 </style>
