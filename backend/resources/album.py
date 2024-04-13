@@ -142,6 +142,7 @@ class LibraryResource(Resource):
     song_fields = {
         "id": fields.Integer,
         "title": fields.String,
+        "genre": fields.String,
     }
 
     album_fields = {

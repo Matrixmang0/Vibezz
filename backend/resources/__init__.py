@@ -28,6 +28,10 @@ from backend.resources.song import EditSongResource
 from backend.resources.song import DeleteSongResource
 
 from backend.resources.playlist import PlaylistsResource
+from backend.resources.playlist import PostPlaylistResource
+from backend.resources.playlist import PutPlaylistResource
+from backend.resources.playlist import PlaylistResource
+from backend.resources.playlist import PlaylistSongAssociation
 
 from backend.resources.image import ImageAlbum
 from backend.resources.image import ImageSong
@@ -53,6 +57,10 @@ api.add_resource(EditSongResource, "/<int:user_id>/edit-song/<int:song_id>")
 api.add_resource(DeleteSongResource, "/<int:user_id>/songs/<int:song_id>/delete")
 
 api.add_resource(PlaylistsResource, "/<int:user_id>/playlists")
+api.add_resource(PostPlaylistResource, "/<int:user_id>/new-playlist")
+api.add_resource(PutPlaylistResource, "/<int:user_id>/edit-playlist/<int:playlist_id>")
+api.add_resource(PlaylistResource, "/<int:user_id>/playlist/<int:playlist_id>")
+api.add_resource(PlaylistSongAssociation, "/<int:user_id>/<int:playlist_id>/add_songs")
 
 api.add_resource(ImageAlbum, "/<int:user_id>/albums/upload-image")
 api.add_resource(ImageSong, "/<int:user_id>/songs/upload-image")

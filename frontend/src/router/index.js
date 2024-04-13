@@ -15,6 +15,9 @@ import EditSong from '../views/EditSong.vue';
 import UserAlbum from '../views/UserAlbum.vue';
 import Song from '../views/Song.vue';
 import Playlists from '../views/Playlists.vue';
+import CreatePlaylist from '../views/CreatePlaylist.vue';
+import RenamePlaylist from '../views/RenamePlaylist.vue';
+import PlaylistSongs from '../views/PlaylistSongs.vue';
 
 const routes = [
 
@@ -43,7 +46,6 @@ const routes = [
         if (response.ok) {
           const data = await response.json();
           to.meta.albums = data;
-          console.log(to.meta.albums);
           next();
         } else {
           console.error('Failed to fetch user data:', response.status);
@@ -532,12 +534,126 @@ const routes = [
             next();
           }
         } else {
-          console.error('Failed to fetch album data:', response.status);
+          console.error('Failed to fetch playlists data:', response.status);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     },
+  },
+
+  {
+      path: '/create-playlist',
+      name: 'CreatePlaylist',
+      component: CreatePlaylist,
+      meta: {
+        title: 'Create Playlist'
+      },
+      beforeEnter: async (to, from, next) => {
+        try {
+          if (!localStorage.getItem('token')) {
+            store.dispatch('showMessage', "Please login to access this page");
+            next('/login');
+          }
+          else {
+            next();
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+    },
+  },
+
+  {
+      path: '/playlist/edit/:playlistId',
+      name: 'RenamePlaylist',
+      component: RenamePlaylist,
+      meta: {
+        title: 'Rename Playlist'
+      },
+      beforeEnter: async (to, from, next) => {
+        try {
+          if (!localStorage.getItem('token')) {
+            store.dispatch('showMessage', "Please login to access this page");
+            next('/login');
+          }
+          const token = localStorage.getItem('token');
+          const playlistId = to.params.playlistId;
+
+          const response = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/playlist/${playlistId}`, { 
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+            },
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            to.meta.playlist = data;
+            next();
+          } else {
+            console.error('Failed to fetch playlist data:', response.status);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+    }
+
+  },
+
+  {
+      path: '/playlist/:playlistId',
+      name: 'PlaylistSongs',
+      component: PlaylistSongs,
+      meta: {
+        title: 'Playlist Songs'
+      },
+      beforeEnter: async (to, from, next) => {
+        try {
+          if (!localStorage.getItem('token')) {
+            store.dispatch('showMessage', "Please login to access this page");
+            next('/login');
+          }
+          const token = localStorage.getItem('token');
+          const playlistId = to.params.playlistId;
+
+          const response1 = await fetch(`http://127.0.0.1:5000/api/${localStorage.getItem('user_id')}/playlist/${playlistId}`, { 
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+            },
+          });
+
+          if (response1.ok) {
+            const data = await response1.json();
+            to.meta.playlist = data;
+          } else {
+            console.error('Failed to fetch playlist data:', response1.status);
+          }
+
+          const response2 = await fetch('http://127.0.0.1:5000/api/albums', {
+            method: 'get',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer ' + token,
+            },
+          });
+
+          if (response2.ok) {
+            const data = await response2.json();
+            to.meta.albums = data;
+            console.log(to.meta.albums);
+            next();
+          } else {
+            console.error('Failed to fetch user data:', response2.status);
+          }
+        } catch (error) {
+          console.error('Error fetching data:', error);
+        }
+    }
+
   },
 ]
 

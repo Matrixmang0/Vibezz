@@ -81,7 +81,7 @@
               <li><a class="dropdown-item" href="/profile" :class="{ 'active': $route.name === 'Profile' }">Profile</a></li>
               <div v-if="user_id != 0">
                 <li><a class="dropdown-item" href="/studio" :class="{ 'active': $route.name === 'MyStudio' }">My Studio</a></li>
-                <li><a class="dropdown-item" href="#">My Playlist</a></li>
+                <li><a class="dropdown-item" href="/playlists">My Playlist</a></li>
                 <li><a class="dropdown-item" href="#">Requests</a></li>
               </div>
               <li><hr class="dropdown-divider"></li>
