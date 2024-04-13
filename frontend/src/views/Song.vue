@@ -10,14 +10,19 @@
       <h3>Artist: {{ song.artist.name }}</h3>
       <p class="lyrics">{{ song.lyrics }}</p>
       <div class="buttons">
-        <button type="button" class="btn btn-primary">
-          <i class="fa-solid fa-plus"></i> Add
-        </button>
         <button type="button" class="btn btn-warning">
           <i class="fa-solid fa-flag"></i> Flag
         </button>
-      </div>
+         <!-- 5-Star Rating Button -->
+    <div class="rating-buttons">
+      <button v-for="rating in 5" :key="rating" class="rating-button" @click="rateSong(rating)">
+        <i :class="{'fa-solid fa-star': rating <= currentRating, 'far fa-star': rating > currentRating}"></i>
+      </button>
     </div>
+      </div>
+     
+    </div>
+    
     <!-- Audio Controls -->
     <div class="audio-controls">
       <audio controls autoplay controlsList="nodownload">
@@ -33,7 +38,32 @@ export default {
   data() {
     return {
       song: this.$route.meta.song,
+      currentRating: 0,
     };
+  },
+  methods: {
+    async rateSong(rating) {
+        this.currentRating = rating;
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/rate/'+this.song.id, {
+                method: 'post',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                  rating: rating
+                })
+              });
+              const data = await response.json();
+              if (response.status != 201) {
+                this.$store.dispatch('showMessage', data.message);
+              }
+              else{
+                this.$store.dispatch('showMessage', data.message);
+                this.$router.push('play/song/'+this.song.id);
+            }
+    },
   },
   name: 'Song',
 };
@@ -46,6 +76,12 @@ export default {
   background-image: linear-gradient(to right, #141e30, #243b55);
   color: #fff;
   font-family: 'Montserrat', sans-serif;
+}
+
+.btn-warning {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  margin-right: 20px;
 }
 
 .song-wallpaper {
@@ -81,7 +117,7 @@ export default {
 .song-details h3 {
   font-size: 20px;
   color: #bbb;
-  margin-bottom: 20px;
+  margin-bottom: 0px;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
@@ -160,4 +196,6 @@ audio::-webkit-media-controls-timeline,
 audio::-webkit-media-controls-volume-slider {
   filter: none;
 }
+
+
 </style>

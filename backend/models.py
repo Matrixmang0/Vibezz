@@ -82,3 +82,24 @@ class Playlist(db.Model):
     songs = db.relationship(
         "Song", secondary=playlist_song_association, backref="playlist", lazy=True
     )
+
+
+class Flags(db.Model):
+    __tablename__ = "flags"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    song_id = db.Column(db.Integer, db.ForeignKey("song.id"), nullable=False)
+    user = db.relationship("User", lazy=True)
+    song = db.relationship("Song", lazy=True)
+    __table_args__ = (db.UniqueConstraint("user_id", "song_id", name="unique_flag"),)
+
+
+class Ratings(db.Model):
+    __tablename__ = "ratings"
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    song_id = db.Column(db.Integer, db.ForeignKey("song.id"), nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    user = db.relationship("User", lazy=True)
+    song = db.relationship("Song", lazy=True)
+    __table_args__ = (db.UniqueConstraint("user_id", "song_id", name="unique_rating"),)
