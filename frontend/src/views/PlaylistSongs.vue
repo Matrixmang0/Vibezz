@@ -62,7 +62,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="song-row" v-for="song in album.songs" :key="song.id">
+          <tr class="song-row" v-for="song in album.songs.filter(s => !playlist.songs.some(p => p.id === s.id))" :key="song.id">
             <td class="song-checkbox">
               <input type="checkbox" v-model="selectedSongs" :value="song.id" />
             </td>
@@ -97,7 +97,8 @@ export default {
   computed: {
     filteredAlbums() {
       return this.albums.filter(album => {
-        return !this.playlist.songs.some(song => song.album_id === album.id);
+        // Check if any song from the album is not in the playlist
+        return album.songs.some(song => !this.playlist.songs.some(p => p.id === song.id));
       });
     },
   },
@@ -131,7 +132,7 @@ export default {
         body: JSON.stringify({ song_id: id }),
       });
       const data = await response.json();
-      if (response.status !== 201) {
+      if (response.status !== 200) {
         this.$store.dispatch('showMessage', data.message);
       } else {
         this.$router.go(0);
