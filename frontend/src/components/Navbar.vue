@@ -42,18 +42,12 @@
             <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> User Stats</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-universal-access"></i> Requests</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-hand-holding-hand"></i> Borrows</a>
+            <a class="nav-link" href="#"><i class="fa-solid fa-universal-access"></i> Flag Requests</a>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-else-if="user_id">
           <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> My Stats</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-book-open"></i> My Books</a>
+            <a class="nav-link" href="/playlists"><i class="fa-solid fa-bookmark"></i> My Playlist</a>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-else>
@@ -82,7 +76,6 @@
               <div v-if="user_id != 0">
                 <li><a class="dropdown-item" href="/studio" :class="{ 'active': $route.name === 'MyStudio' }">My Studio</a></li>
                 <li><a class="dropdown-item" href="/playlists">My Playlist</a></li>
-                <li><a class="dropdown-item" href="#">Requests</a></li>
               </div>
               <li><hr class="dropdown-divider"></li>
               <li class="logout-item"><a class="dropdown-item" @click="logout" href="">Logout</a></li>

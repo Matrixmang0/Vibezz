@@ -2,37 +2,34 @@ from flask_restful import Resource, reqparse, fields, marshal, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import abort, request
 
-from backend.models import User, Song, Ratings, db
+from backend.models import User, Song, Flags, db
 
 
-class RatingsResource(Resource):
+class FlagResource(Resource):
 
     @jwt_required()
-    def post(self, user_id, song_id):
+    def post(self, user_id):
         if user_id != get_jwt_identity():
             abort(403, "You are not authorized to view this page")
         user = User.query.get(user_id)
         if not user:
             abort(404, "User ID: {} doesn't exist".format(user_id))
+
+        data = request.get_json()
+        song_id = data.get("song_id")
         song = Song.query.get(song_id)
         if not song:
             abort(404, "Song ID: {} doesn't exist".format(song_id))
 
-        data = request.get_json()
-        rating = data.get("rating")
+        ex_flag = Flags.query.filter_by(user_id=user_id, song_id=song_id).first()
+        if ex_flag:
+            abort(404, "You have already flagged this song")
 
-        ex_rating = Ratings.query.filter_by(user_id=user_id, song_id=song_id).first()
-        if ex_rating:
-            ex_rating.rating = rating
-            db.session.commit()
-            return ({"message": "Ratings successfully updated"}, 200)
-
-        ratings = Ratings(
-            rating=rating,
+        flag = Flags(
             user_id=user_id,
             song_id=song_id,
         )
 
-        db.session.add(ratings)
+        db.session.add(flag)
         db.session.commit()
-        return ({"message": "Ratings successfully posted"}, 201)
+        return ({"message": "Song Successfully Flagged"}, 201)

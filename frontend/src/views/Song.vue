@@ -10,7 +10,7 @@
       <h3>Artist: {{ song.artist.name }}</h3>
       <p class="lyrics">{{ song.lyrics }}</p>
       <div class="buttons">
-        <button type="button" class="btn btn-warning">
+        <button type="button" class="btn btn-warning" @click="flagSong(song.id)">
           <i class="fa-solid fa-flag"></i> Flag
         </button>
          <!-- 5-Star Rating Button -->
@@ -61,11 +61,30 @@ export default {
               }
               else{
                 this.$store.dispatch('showMessage', data.message);
-                this.$router.push('play/song/'+this.song.id);
             }
     },
+    async flagSong(song_id) {
+        const token = localStorage.getItem('token');
+        const response = await fetch('http://127.0.0.1:5000/api/'+localStorage.getItem('user_id')+'/flag', {
+                method: 'post',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + token,
+                },
+                body: JSON.stringify({
+                  song_id: song_id
+                })
+              });
+              const data = await response.json();
+              if (response.status != 201) {
+                this.$store.dispatch('showMessage', data.message);
+              }
+              else{
+                this.$store.dispatch('showMessage', data.message);
+              }
   },
   name: 'Song',
+},
 };
 </script>
 
