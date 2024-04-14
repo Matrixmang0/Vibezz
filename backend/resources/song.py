@@ -50,9 +50,6 @@ class SongResource(Resource):
 
         return ({"message": "Song created successfully"}, 201)
 
-    def put(self):
-        pass
-
 
 class GetSongResource(Resource):
 

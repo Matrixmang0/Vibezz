@@ -47,9 +47,6 @@ class PlaylistResource(Resource):
         playlist = marshal(playlist, self.get_playlist_fields)
         return playlist, 200
 
-    def post(self):
-        pass
-
     @jwt_required()
     def put(self, playlist_id, user_id):
         if user_id != get_jwt_identity():

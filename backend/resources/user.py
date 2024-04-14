@@ -77,9 +77,6 @@ class UserResource(Resource):
         db.session.commit()
         return {"message": "Profile updated successfully"}, 200
 
-    def delete(self):
-        pass
-
 
 class UsersResource(Resource):
 
