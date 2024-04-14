@@ -1,10 +1,8 @@
 openapi: 3.0.0
 info:
-  title: Bibilary API
+  title: Vibezz API
   version: 1.0.0
-  description: An API for managing a library system
-servers:
-  - url: http://api.bibilary.com/api
+  description: An API for managing a music library system
 paths:
   /login:
     post:
