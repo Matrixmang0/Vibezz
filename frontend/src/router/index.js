@@ -19,6 +19,7 @@ import CreatePlaylist from '../views/CreatePlaylist.vue';
 import RenamePlaylist from '../views/RenamePlaylist.vue';
 import PlaylistSongs from '../views/PlaylistSongs.vue';
 import AdminStats from '../views/AdminStats.vue';
+import AdminFlagRequests from '@/views/AdminFlagRequests.vue';
 
 const routes = [
 
@@ -661,7 +662,7 @@ const routes = [
     name: 'AdminStats',
     component: AdminStats,
     meta: {
-      title: 'User Album'
+      title: 'User Stats'
     },  
     beforeEnter: async (to, from, next) => {
       try {
@@ -710,6 +711,52 @@ const routes = [
           
         } else {
           console.error('Failed to fetch album data:', response2.status);
+        }
+
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    },
+  },
+
+  {
+    path: '/flag-requests',
+    name: 'AdminFlagRequests',
+    component: AdminFlagRequests,
+    meta: {
+      title: 'Flag Requests'
+    },  
+    beforeEnter: async (to, from, next) => {
+      try {
+
+        if (!localStorage.getItem('token') && localStorage.getItem('user_id') !== '0') {
+          store.dispatch('showMessage', "Please login to access this page");
+          next('/login');
+          return;
+        }
+
+        const token = localStorage.getItem('token');
+
+        const response1 = await fetch(`http://127.0.0.1:5000/api/flags`, {
+          method: 'get',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token,
+          },
+        });
+
+        if (response1.ok) {
+          const data = await response1.json();
+          if (data.msg === "No flags found"){
+            console.log("No flags found");
+            next();
+          }
+          else{
+            to.meta.flags = data;
+            next();
+          }
+        } else {
+          console.error('Failed to fetch album data:', response1.status);
         }
 
       } catch (error) {

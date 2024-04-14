@@ -37,6 +37,8 @@ from backend.resources.playlist import PlaylistSongAssociation
 from backend.resources.ratings import RatingsResource
 
 from backend.resources.flag import FlagResource
+from backend.resources.flag import AdminFlagResource
+from backend.resources.flag import AdminDeleteFlagResource
 
 from backend.resources.image import ImageAlbum
 from backend.resources.image import ImageSong
@@ -71,6 +73,8 @@ api.add_resource(PlaylistSongAssociation, "/<int:user_id>/<int:playlist_id>/add_
 api.add_resource(RatingsResource, "/<int:user_id>/rate/<int:song_id>")
 
 api.add_resource(FlagResource, "/<int:user_id>/flag")
+api.add_resource(AdminFlagResource, "/flags")
+api.add_resource(AdminDeleteFlagResource, "/flags/<int:flag_id>")
 
 api.add_resource(ImageAlbum, "/<int:user_id>/albums/upload-image")
 api.add_resource(ImageSong, "/<int:user_id>/songs/upload-image")

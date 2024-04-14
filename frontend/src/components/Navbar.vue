@@ -42,7 +42,7 @@
             <a class="nav-link" href="/user-stats"><i class="fa-solid fa-chart-simple"></i> User Stats</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-universal-access"></i> Flag Requests</a>
+            <a class="nav-link" href="/flag-requests"><i class="fa-solid fa-universal-access"></i> Flag Requests</a>
           </li>
         </ul>
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-else-if="user_id">

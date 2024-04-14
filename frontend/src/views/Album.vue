@@ -84,16 +84,16 @@ export default {
             if (!response.ok) {
               // Handle non-successful response (status code other than 2xx)
               const errorData = await response.json();
-              throw new Error(errorData.message || 'Failed to delete album');
+              throw new Error(errorData.message || 'Failed to delete song');
             }
 
             const data = await response.json();
             this.$store.dispatch('showMessage', data.message);
             this.$router.go();
           } catch (error) {
-            console.error('Error deleting album:', error);
+            console.error('Error deleting song:', error);
             // Optionally, show an error message to the user
-            this.$store.dispatch('showMessage', 'Failed to delete album');
+            this.$store.dispatch('showMessage', 'Failed to delete song');
           }
         }
     },
