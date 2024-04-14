@@ -1,4 +1,4 @@
-from flask_restful import Resource, reqparse, fields, marshal_with
+from flask_restful import Resource, reqparse, fields, marshal_with, marshal
 from backend.models import User, db
 from email_validator import validate_email, EmailUndeliverableError
 import re
@@ -82,8 +82,6 @@ class UserResource(Resource):
 
 
 class UsersResource(Resource):
-    def get(self):
-        pass
 
     def post(self):
         args = post_parser.parse_args()
@@ -200,3 +198,23 @@ class PassResource(Resource):
         user.set_password(new_password)
         db.session.commit()
         return {"message": "Password updated successfully"}, 200
+
+
+class AdminUserResource(Resource):
+
+    user_fields = {
+        "id": fields.Integer,
+        "name": fields.String,
+        "username": fields.String,
+        "email": fields.String,
+        "role_id": fields.String,
+    }
+
+    @jwt_required()
+    def get(self):
+        if get_jwt_identity() == "0":
+            abort(403, "You are not authorized to access this information")
+
+        users = User.query.filter(User.id != 0).all()
+        users = [marshal(user, self.user_fields) for user in users]
+        return users, 200

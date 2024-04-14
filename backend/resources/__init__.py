@@ -11,6 +11,7 @@ from backend.resources.login import LoginResource
 from backend.resources.user import UserResource
 from backend.resources.user import UsersResource
 from backend.resources.user import PassResource
+from backend.resources.user import AdminUserResource
 
 from backend.resources.album import AlbumsResource
 from backend.resources.album import UserAlbumResource
@@ -44,6 +45,7 @@ api.add_resource(LoginResource, "/login")
 api.add_resource(UserResource, "/user/<int:user_id>")
 api.add_resource(UsersResource, "/users")
 api.add_resource(PassResource, "/user/<int:user_id>/edit-pass")
+api.add_resource(AdminUserResource, "/user_data")
 
 api.add_resource(AlbumsResource, "/<int:user_id>/albums")
 api.add_resource(UserAlbumResource, "/album/<int:album_id>")

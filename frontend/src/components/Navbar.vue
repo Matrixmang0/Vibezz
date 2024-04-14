@@ -39,7 +39,7 @@
 
         <ul class="navbar-nav ms-auto mb-2 mb-lg-0" v-if="user_id == 0">
           <li class="nav-item">
-            <a class="nav-link" href="#"><i class="fa-solid fa-chart-simple"></i> User Stats</a>
+            <a class="nav-link" href="/user-stats"><i class="fa-solid fa-chart-simple"></i> User Stats</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#"><i class="fa-solid fa-universal-access"></i> Flag Requests</a>
