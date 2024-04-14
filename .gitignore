@@ -5,4 +5,5 @@ venv
 backend/__pycache__
 backend/resources/__pycache__
 instance
+celerybeat-schedule
 .env

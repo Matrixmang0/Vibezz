@@ -15,4 +15,9 @@ app.config["UPLOAD_FOLDER_SONG"] = os.getenv("UPLOAD_FOLDER_SONG")
 app.config["UPLOAD_FOLDER_AUDIO"] = os.getenv("UPLOAD_FOLDER_AUDIO")
 app.config["ALLOWED_EXTENSIONS_IMAGE"] = os.getenv("ALLOWED_EXTENSIONS_IMAGE")
 app.config["ALLOWED_EXTENSIONS_AUDIO"] = os.getenv("ALLOWED_EXTENSIONS_AUDIO")
+
+app.config["CELERY_BROKER_URL"] = os.getenv("CELERY_BROKER_URL")
+app.config["CELERY_RESULT_BACKEND"] = os.getenv("CELERY_RESULT_BACKEND")
+
+
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
