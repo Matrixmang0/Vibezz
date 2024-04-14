@@ -89,9 +89,8 @@ Before running the application, make sure you have the following dependencies in
 
 To test emails during development, you can use MailHog. Make sure MailHog is installed and running:
 
-    ```
     ~/go/bin/MailHog
-    ```
+
 
 **Usage**
 ---------
